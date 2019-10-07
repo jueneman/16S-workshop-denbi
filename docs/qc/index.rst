@@ -1,34 +1,10 @@
-***************
-FastQC Quality Control
-***************
+Data Quality Assessment
+=======================
 
-FastQC aims to provide a simple way to do some quality control checks
-on raw sequence data coming from high throughput sequencing
-pipelines. It provides a modular set of analyses which you can use to
-give a quick impression of whether your data has any problems of which
-you should be aware before doing any further analysis.
-
-The main functions of FastQC are
-
-* Import of data from BAM, SAM or FastQ files (any variant)
-* Providing a quick overview to tell you in which areas there may be problems
-* Summary graphs and tables to quickly assess your data
-* Export of results to an HTML based permanent report
-* Offline operation to allow automated generation of reports without running the interactive application
-
-See the `FastQC home page <http://www.bioinformatics.babraham.ac.uk/projects/fastqc/>`_ for more info.
-
-To run ``FastQC`` on our data, simply type::
-
-  cd ~/workdir/assembly
-  fastqc
-
-Start the analysis by loading the FASTQ files using menu "File -> Open..." 
-
-Check out the `FastQC home page <http://www.bioinformatics.babraham.ac.uk/projects/fastqc/>`_ for examples
-of reports including bad data.
+In the following, we will assess the data quality by looking at the sequencing effort, the raw reads and the data quality as reported by the sequencing instrument (using MinIONQC and FastQC) as well as inferring the actual data quality by aligning the reads to the reference genome (read mapping).
 
 .. toctree::
    :maxdepth: 1
 
-
+   FastQC
+   
