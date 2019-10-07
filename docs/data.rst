@@ -1,34 +1,43 @@
 The Tutorial Data Set
 ================================
 
-Note: This tutorial was prepared for a training workshop utilizing
-our local compute infrastrucutre. If you want to download the data set
-to your machine and run it locally, you can find the data 
-`here <https://uni-bielefeld.sciebo.de/index.php/s/FpiLaNWWp5MDVui>`_.
+The first thing you need to do is to connect to your virtual machine with the X2Go Client. If you are working with your laptop and haven't installed it yet - you can get it here:
+https://wiki.x2go.org/doku.php/download:start
 
-We have prepared a small toy data set for this tutorial. The data is located 
-in `/vol/metagencourse/DATA/WGS-data` directory, which has the following content:
+Enter the IP of your virtual machine, the port, the username "ubuntu" and select your ssh key. When you have successfully connected to your machine, open a terminal.
 
-+---------------+--------------------------------------------+
-| File          | Content                                    |
-+===============+============================================+
-| genomes/      | Directory containing the reference genomes |
-+---------------+--------------------------------------------+
-| gold_std/     | Gold Standard assemblies                   |
-+---------------+--------------------------------------------+
-| read1.fq      | Read 1 of paired reads (FASTQ)             |
-+---------------+--------------------------------------------+
-| read2.fq      | Read 2 of paired reads (FASTQ)             |
-+---------------+--------------------------------------------+
-| reads.fas     | Shuffled reads (FASTA)                     |
-+---------------+--------------------------------------------+
+As you have started the VM with a volume attached, this volume needs to be given to the ubuntu user for easy access::
 
-Create a working directory in your home directory and symbolic links
-to the data files::
+  sudo chown ubuntu:ubuntu /mnt/volume/
+  
+Create a link in your home directory to the mounted volume::
 
-  cd ~/workdir
-  mkdir assembly
-  cd assembly
-  ln -s /vol/metagencourse/DATA/WGS-data/* .
+  ln -s /mnt/volume/ workdir 
 
+The tutorial dataset is located in our object store. We have also prepared some precomputed results.You can get both here::
 
+cd ~/workdir
+  wget https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/mgcourse_data/16Sdata.tgz
+  
+Then, unpack the tar archive::
+
+  tar -xzvf 16Sdata.tgz
+  
+  or
+  
+and remove the tar archives::
+
+  rm 16Sdata.tgz
+  
+Have a short look, on what is contained within the data directory. It should look like this::
+
+  ls -l ~/workdir/data/
+  -rw-r--r-- 1 ubuntu ubuntu 4372654 Aug 30 08:24 Reference.fna
+  drwxr-xr-x 2 ubuntu ubuntu   24576 Aug 30 08:24 fast5
+  drwxrwxr-x 2 ubuntu ubuntu    4096 Sep  5 07:23 fast5_small
+  drwxrwxr-x 2 ubuntu ubuntu    4096 Sep 12 08:01 fast5_tiny
+  drwxr-xr-x 2 ubuntu ubuntu    4096 Aug 30 08:36 illumina
+
+If you want to disable system beep sounds::
+
+  xset -b
