@@ -33,7 +33,6 @@ Merge reads
 - Quality scores at merged positions recalculated (abs difference)
 
 Let's try to merge the first pair of reads:
-
   mkdir -p ~/workdir/flash
   cd ~/workdir/flash
   flash -r 300 ~/workdir/16Sdata/057_R1.fastq ~/workdir/16Sdata/057_R2.fastq -o 057
@@ -49,11 +48,9 @@ The merged PE reads have now been written to the following file::
   057.extendedFrags.fastq
 
 Let's do that for all other pairs::
-
   parallel "flash -r 300 ~/workdir/16Sdata/{}_R1.fastq ~/workdir/16Sdata/{}_R2.fastq -o {}" ::: {058,068,074}
   
 The dataset 074 showed some high amount of uncombined pairs::
-
   [FLASH] Read combination statistics:
   [FLASH]     Total pairs:      29677
   [FLASH]     Combined pairs:   20765
