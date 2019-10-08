@@ -25,96 +25,42 @@ For this exercise:
  - Trim quality: sickle
  - Filter length: ea-utils
 
+Merge reads
+-----------
 
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- Assembly of forward and reverse read pairs
-   
-   - If original DNA fragment short than 2x read length
+- Assembly of forward and reverse read pairs (if original DNA fragment short than 2x read length)   
 - Ungapped alignment with *min overlap* region (favors Illumina)
 - Quality scores at merged positions recalculated (abs difference)
 
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Let's try to merge the first pair of reads:
 
-Part I: Data Pre-Processing
+  mkdir -p ~/workdir/flash
+  cd ~/workdir/flash
+  flash -r 300 ~/workdir/16Sdata/057_R1.fastq ~/workdir/16Sdata/057_R2.fastq -o 057
+  
+You will get a report on how good that worked out::
+  [FLASH] Read combination statistics:
+  [FLASH]     Total pairs:      41836
+  [FLASH]     Combined pairs:   37934
+  [FLASH]     Uncombined pairs: 3902
+  [FLASH]     Percent combined: 90.67%
 
-cd \~/workdir/raw\_data
+The merged PE reads have now been written to the following file::
+  057.extendedFrags.fastq
 
-flash BGA1\_1\_R1.fastq BGA1\_1\_R2.fastq -r 300 -o BGA1\_1
+Let's do that for all other pairs::
 
+  parallel "flash -r 300 ~/workdir/16Sdata/{}_R1.fastq ~/workdir/16Sdata/{}_R2.fastq -o {}" ::: {058,068,074}
+  
+The dataset 074 showed some high amount of uncombined pairs::
 
+  [FLASH] Read combination statistics:
+  [FLASH]     Total pairs:      29677
+  [FLASH]     Combined pairs:   20765
+  [FLASH]     Uncombined pairs: 8912
+  [FLASH]     Percent combined: 69.97%
 
-
-
-
-
-Merge reads
------------
-
-Assembly of forward and reverse read pairs
-
--   If original DNA fragment short than 2x read length
-
-Ungapped alignment with *min overlap* region (favors Illumina)
-
-Quality scores at merged positions recalculated (abs difference)
-
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-flash BGA1\_1\_R1.fastq BGA1\_1\_R2.fastq -r 300 -o BGA1\_1
-
-
-
-
-
-
-
-Merge reads
------------
-
-Assembly of forward and reverse read pairs
-
--   If original DNA fragment short than 2x read length
-
-Ungapped alignment with *min overlap* region (favors Illumina)
-
-Quality scores at merged positions recalculated (abs difference)
-
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-flash BGA1\_1\_R1.fastq BGA1\_1\_R2.fastq -r 300 -o BGA1\_1
-
-
-
-
-
-
-
-Merge reads
------------
-
-Assembly of forward and reverse read pairs
-
--   If original DNA fragment short than 2x read length
-
-Ungapped alignment with *min overlap* region (favors Illumina)
-
-Quality scores at merged positions recalculated (abs difference)
-
--   Adjust min/max overlap as necessary
--   Provide fragment length and SD if available
+If you have more information about the amplified fragment, you can adjust min/max overlap as necessary and also provide fragment length and SD if available.
 
 Quality Treatment – Primer Clipping 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
