@@ -16,7 +16,7 @@ Quality Treatment
 
 
 Typical workflow:
-^^^^^^^^^^^^^^^^^
+-----------------
 
 .. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/workflow.png
 
@@ -216,7 +216,7 @@ As the last step of this part, we gather all hereby processed files into a new d
   cp length/*.fastq HQ/
   
 Final Remarks 
-^^^^^^^^^^^^^
+-------------
 
 Know your data
 
@@ -237,8 +237,6 @@ Presented workflow only one approach
 -   Try different workflow order (e.g. merge last)
 
 But always examine raw sequencing data!
-
-
 
 References
 ^^^^^^^^^^
