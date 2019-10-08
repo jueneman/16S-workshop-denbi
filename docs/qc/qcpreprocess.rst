@@ -1,788 +1,201 @@
-Quality Control & Pre-processing
---------------------------------
-
-FASTQ Format 
-^^^^^^^^^^^^^^^^
-
-Let's first have a look on what a FASTQ file looks like and who its format is defined:
-
-.. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png
-
-  
-
-
-![](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
-
-Sequence Quality Scores 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Sequence quality scores originated form the phred base caller used for Sanger sequencing:
-
-
-
--   Quality = log-transformed error probability
-
-+-----------------------------------+-----------------------------------+
-| -   Quality value                 | -   Error probability             |
-+-----------------------------------+-----------------------------------+
-| -   20                            | -   1/100                         |
-| -   30                            | -   1/1000                        |
-| -   40                            | -   1/10000                       |
-+-----------------------------------+-----------------------------------+
-
--   Example:
-
- 
-
-1
-
-Open a new terminal (&lt;left windows key&gt;+&lt;t&gt;)
-
-Connect to your VM via ssh using the generated key
-
--   ssh -i cws.key <ubuntu@134.176.27.XYZ>
-
-ssh might ask for accepting host key on first connect
-
-You will end up with a command prompt within the VM:
-
-Hands on: access VM
-
- 
-
-1
-
--   Go to Project → Compute → Volumes
--   Click on “Create Volume”
-
-1.
-
-2.
-
-Hands on: volumes
-
- 
-
--   Choose a name for the volume, e.g. “css\_vol”
--   Select a suitable size (default of 1 GB should be OK now)
--   Click on “Create Volume”
-
-Hands on: volumes
-
- 
-
--   Volume was created and is available now
--   Extend menu for volume and select “Manage Attachments”
-
-Click on arrow to extend menu
-
-Hands on: volumes
-
- 
-
--   Select the instance we have created before
--   Click on “Attach Volume”
-
-1.
-
-2.
-
-Hands on: volumes
-
- 
-
--   Volume list now shows the volume as attached
--   No more fancy feedback in dashboard…
--   … but in the VM!
-
-Hands on: volumes
-
- 
-
-VM
-
-PUB
-
-PRIV
-
-Project
-
-Domain
-
-Floating IP
-
-Network
-
-Flavor
-
-Images
-
-SSH Keys
-
-PUB
-
-Volume
-
-Router
-
-Dashboard
-
-Internet
-
-Cloud
-
-User
-
--   VM disks are not persistent
--   Data on these disks is lost if VM is deleted
--   Volumes are persistent
--   Attachable to VMs
--   Use for persistent data or data transfer
--   Owned by project
-
-Hands on: volumes
-
- 
-
--   Switch back to the terminal running ssh (or restart it)
--   Invoke “*ls /dev/vd\”
--   New block device vdb appeared
--   Create a filesystem on it: “*sudo mkfs.ext4 /dev/vdb*”
--   “mount” it: “*sudo mount /dev/vdb /mnt*”
--   Validate with e.g. “*df*” command:
-
-Hands on: volumes
-
- 
-
-1
-
-Volume is now accessible as standard file system
-
-Can be detached and attached to other VMs
-
-Stays around until being deleted
-
-But:
-
--   Volumes only accessible within project
--   Choice of file system depends on operating system
--   Might require management of posix users/groups
--   Not a shared file system, attachable to one VM at a time
--   Durability / accessibility depends on site setup
-
-Hands on: volumes
-
-Prepare Working Directory 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd
-
-mkdir /mnt/workdir
-
-ln -s /mnt/workdir
-
-Create workdir
---------------
-
-cd \~/Data/
-
-cp -r raw\_data \~/workdir/
-
-
-
-Copy data
----------
-
--   Ensure everyone has equally structured FS
--   Keep results in volume (crash safe)
-
-FastQC 
-^^^^^^^^^=
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-Part I: Data Pre-Processing
-
-fastqc --help
-
-
-
-Run FastQC
-----------
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-FastQC 
-^^^^^^^^^=
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-Part I: Data Pre-Processing
-
-fastqc --help
-
-
-
-Run FastQC
-----------
-
-cd \~/workdir
-
-mkdir -p \~/www/FastQC/BGA1\_1\_R1
-
-mkdir -p \~/www/FastQC/BGA1\_1\_R2
-
-
-
-fastqc -t 16 -o \~/www/FastQC/BGA1\_1 raw\_data/BGA1\_1\_R1.fastq
-
-
-
-fastqc -t 16 -o \~/www/FastQC/BGA1\_1 raw\_data/BGA1\_1\_R2.fastq
-
-
-
-Create reports
---------------
-
-FastQC 
-^^^^^^^^^=
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-Part I: Data Pre-Processing
-
-fastqc --help
-
-
-
-Run FastQC
-----------
-
--   Open http://YOUR\_OPENSTACK\_INSTANCE\_IP/
--   We will inspect the report together now ...
-
-cd \~/workdir
-
-mkdir -p \~/www/FastQC/BGA1\_1\_R1
-
-mkdir -p \~/www/FastQC/BGA1\_1\_R2
-
-
-
-fastqc -t 16 -o \~/www/FastQC/BGA1\_1\_R1
-raw\_data/BGA1\_1\_R1.fastq
-
-
-
-fastqc -t 16 -o \~/www/FastQC/BGA1\_1 \_R2
-raw\_data/BGA1\_1\_R2.fastq
-
-
-
-Create reports
---------------
-
 Quality Treatment 
-^^^^^^^^^^^^^^^^^^^^^
+-----------------
 
-Reads contain errors (0.1-15%) and contamination
+- Reads contain errors (0.1-15%) and contamination
+- Quality matters!?
 
-Quality matters!?
+  - NGS high throughput = lots of data
+  - The more data the more errors (systematic errors)
+  - 16S data &gt; WGS read-based &gt; WGS assembly-based
+  - Better data = lower computational cost
+  - Decrease of false positives
+  - But: always trade-off (false negatives)   
+   
+- Quality based filtering vs error correction
+- Many many tools available
 
--   NGS high throughput = lots of data
--   The more data the more errors (systematic errors)
--   16S data &gt; WGS read-based &gt; WGS assembly-based
--   Better data = lower computational cost
--   Decrease of false positives
--   But: always trade-off (false negatives)
-
-Quality based filtering vs error correction
-
-Many many tools available
-
-Part I: Data Pre-Processing
-
-Quality Treatment 
-^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
 
 Typical workflow:
+^^^^^^^^^^^^^^^^^
 
-de-multiplex
-
-merge reads
-
-clip adapters
-
-trim by quality
-
-filter by length
-
-clip primers
-
-raw data
-
-high quality data
-
-16S based
-
-WGS read-based
-
-WGS assembly-based
-
-Quality Treatment 
-^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-Typical workflow:
-
-de-multiplex
-
-merge reads
-
-clip adapters
-
-trim by quality
-
-filter by length
-
-clip primers
-
-raw data
-
-high quality data
-
-16S based
-
-WGS read-based
-
-WGS assembly-based
-
--   Only 16S data
--   Merge: FLASh
--   Clip primers: cutadapt
--   Trim quality: sickle
--   Filter length: ea-utils
+.. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/workflow.png
 
 For this exercise:
 
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-Assembly of forward and reverse read pairs
-
--   If original DNA fragment short than 2x read length
-
-Ungapped alignment with *min overlap* region (favors Illumina)
-
-Quality scores at merged positions recalculated (abs difference)
-
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-flash BGA1\_1\_R1.fastq BGA1\_1\_R2.fastq -r 300 -o BGA1\_1
-
-
-
-
-
-
+- Only 16S data
+- Merge: FLASh
+- Clip primers: cutadapt
+- Trim quality: sickle
+- Filter length: ea-utils
 
 Merge reads
 -----------
 
-Assembly of forward and reverse read pairs
+- Assembly of forward and reverse read pairs (if original DNA fragment short than 2x read length)   
+- Ungapped alignment with *min overlap* region (favors Illumina)
+- Quality scores at merged positions recalculated (abs difference)
 
--   If original DNA fragment short than 2x read length
 
-Ungapped alignment with *min overlap* region (favors Illumina)
+Let's try to merge the first pair of reads::
 
-Quality scores at merged positions recalculated (abs difference)
+  mkdir -p ~/workdir/flash
+  cd ~/workdir/flash
+  flash -r 300 ~/workdir/16Sdata/057_R1.fastq ~/workdir/16Sdata/057_R2.fastq -o 057
+  
+You will get a report on how good that worked out::
 
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [FLASH] Read combination statistics:
+  [FLASH]     Total pairs:      41836
+  [FLASH]     Combined pairs:   37934
+  [FLASH]     Uncombined pairs: 3902
+  [FLASH]     Percent combined: 90.67%
 
-Part I: Data Pre-Processing
+The merged PE reads have now been written to the following file::
 
-cd \~/workdir/raw\_data
+  057.extendedFrags.fastq
 
-flash BGA1\_1\_R1.fastq BGA1\_1\_R2.fastq -r 300 -o BGA1\_1
+Let's do that for all other pairs::
 
+  parallel "flash -r 300 ~/workdir/16Sdata/{}_R1.fastq ~/workdir/16Sdata/{}_R2.fastq -o {}" ::: {058,068,074}
+  
+If you have more information about the amplified fragment, you can adjust min/max overlap as necessary and also provide fragment length and SD if available.
 
 
+Primer Clipping 
+---------------
 
+First we need to know which primer sequences weree used to asmplify our region of interest
 
++---------------+--------+--------------------------|
+| Domain        | Primer | Sequence                 |
++===============+========+==========================+
+| Bacteria  RRS | F939   | GAATTGACGGGGGCCCGCACAAG  |
+| Bacteria  RRS | R1378  | CGGTGTGTACAAGGCCCGGGAACG |
++---------------+--------+--------------------------+
 
+We are going to use cutadapt to search for and remove any found primers sequences from the merged reads::
 
-Merge reads
------------
+   mkdir ~/workdir/cutadapt
+   cd ~/workdir/cutadapt
+   cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/057.extendedFrags.fastq -e 0.2 -O 10 -o 057.trimmedf.fastq
 
-Assembly of forward and reverse read pairs
 
--   If original DNA fragment short than 2x read length
+- '^' = anchoring the rpimer at the 5' end of the reads
+- '*-e 0.2*' = max error rate of 20%
+- '-O *10*' = min overlap of ten bases
 
-Ungapped alignment with *min overlap* region (favors Illumina)
+-  cutadapt very useful for primer & adapter trimming
+-  Accepts wobble bases
+-  Adjust '*stringency*' parameter to your needs
+-  Inspect output closely (to many / suspicious trimmed reads)
 
-Quality scores at merged positions recalculated (abs difference)
+Let's have a look at our first attempt::
 
-Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  === Summary ===
 
-Part I: Data Pre-Processing
+  Total reads processed:                  48,997
+  Reads with adapters:                    48,940 (99.9%)
+  Reads written (passing filters):        48,997 (100.0%)
 
-cd \~/workdir/raw\_data
+  Total basepairs processed:    23,778,470 bp
+  Total written (filtered):     22,652,907 bp (95.3%)
 
-flash BGA1\_1\_R1.fastq BGA1\_1\_R2.fastq -r 300 -o BGA1\_1
+  === Adapter 1 ===
 
+  Sequence: GAATTGACGGGGGCCCGCACAAG; Type: anchored 5'; Length: 23; Trimmed: 48940 times.
 
+  No. of allowed errors:
+  0-4 bp: 0; 5-9 bp: 1; 10-14 bp: 2; 15-19 bp: 3; 20-23 bp: 4
 
+  Overview of removed sequences
+  length	count	expect	max.err	error counts
+  19	11	0.0	3	0 0 0 0 11
+  20	23	0.0	4	0 0 0 22 1
+  21	36	0.0	4	0 0 30 5 1
+  22	478	0.0	4	0 422 52 4
+  23	48137	0.0	4	47081 1031 16 7 2
+  24	42	0.0	4	0 34 7 1
+  25	75	0.0	4	0 0 65 3 7
+  26	138	0.0	4	0 0 0 136 2
 
 
 
+Now we trim off the reverse primer::
 
-Merge reads
------------
+   mkdir ~/workdir/cutadapt
+   cd ~/workdir/cutadapt
+   cutadapt -a CGGTGTGTACAAGGCCCGGGAACG$ 057.trimmedf.fastq -e 0.2 -O 10 -o 057.trimmedfr.fastq
 
-Assembly of forward and reverse read pairs
+Now, apparently that didn't worked out. The problem is, that the primer is given 5'-3' and by merging our reads the reverse reads now is the reverse complement of the original read, so the primer als needs to be reverse complemented.
 
--   If original DNA fragment short than 2x read length
+Let us quickly do that by creating a new fasta file and call `rev`::
 
-Ungapped alignment with *min overlap* region (favors Illumina)
+  cd ~/workdir
+  echo -e ">primer\nCGGTGTGTACAAGGCCCGGGAACG" > revprimer.fas
+  revseq -sequence revprimer.fas -outseq revprimer_rc.fas
+  cat revprimer_rc.fas
+  
+We can use the correct primer now to trim our reads at the 3' end::
 
-Quality scores at merged positions recalculated (abs difference)
+   cd ~/workdir/cutadapt
+   cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ 057.trimmedf.fastq -e 0.2 -O 10 -o 057.trimmedfr.fastq
 
--   Adjust min/max overlap as necessary
--   Provide fragment length and SD if available
+Finally, we do that for all of our datasets::
 
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  cd ~/workdir/cutadapt
+  parallel "cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/{}.extendedFrags.fastq -e 0.2 -O 10 -o {}.trimmedf.fastq" ::: {058,068,074}
+  parallel "cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ {}.trimmedf.fastq -e 0.2 -O 10 -o {}.trimmedfr.fastq" ::: {058,068,074}
+  
 
-Part I: Data Pre-Processing
+Quality Trimming 
+----------------
 
-cd \~/workdir/raw\_data
+Usually, reads with very low quality consist of many miscalled bases, which can influence any consecutive processing step by inflating cluster numbers or decreasing alignment quality. Therefore, we are going to trim of low quality 3'-ends (and 5'-ends).
 
+For that we use sickle, which trims based on average q-score within a sliding window approach::
 
+  mkdir -p ~/workdir/sickle
+  cd ~/workdir/sickle
+  sickle se -f ../cutadapt/057.trimmedfr.fastq -t sanger -q20 -o 057.clipped.fastq
 
-cat Primers.txt
+-  '-q 20' = min average quality score of 20
+-  '-t sanger' = Phred+33 q-score scale
+-  '-n' = truncate at ambiguous (N) base calls
 
+Again, we do that for all our data sets::
 
+  cd ~/workdir/sickle
+  parallel "sickle se -f ../cutadapt/{}.trimmedfr.fastq -t sanger -q20 -o {}.clipped.fastq" ::: {058,068,074}
 
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --untrimmed-output
-BGA1\_1.f\_utr.fastq
+Lenght Filtering
+----------------
 
+Finally, we will filter out all reads which are to short (generally) or which out of the fragment length (16S hypervariable region). In order to determine the low and high boundry of this filtering step, we will use a small Perl script which generates a read length histrogram and calculates some basic statistics.
 
+Pls download that script first::
 
+  cd $CONDA_PREFIX/bin
+  wget https://github.com/jueneman/16S-workshop-denbi/edit/master/docs/qc/FastaStats.pl
+  chmod u+x FastaStats.pl
 
+Now we call it on our FastQ file::
 
--   '*-e 0.2*' = max error rate of 20%
--   '-O *10*' = min overlap of ten bases
-
---help is your friend
-
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-cat Primers.txt
-
-
-
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --untrimmed-output
-BGA1\_1.f\_utr.fastq
-
-
-
-
-
--   cutadapt very useful for primer & adapter trimming
--   Accepts wobble bases
--   Adjust '*stringency*' parameter to your needs
--   Inspect output closely (to many / suspicious trimmed reads)
-
-<!-- -->
-
--   '*-e 0.2*' = max error rate of 20%
--   '-O *10*' = min overlap of ten bases
-
---help is your friend
-
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-cat Primers.txt
-
-
-
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --untrimmed-output
-BGA1\_1.f\_utr.fastq
-
-
-
-
-
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-cat Primers.txt
-
-
-
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --trimmed-only
-
-
-
-cutadapt -a GGATTAGATACCCBDGTAGTC\$ BGA1\_1.f\_tr.fastq -e 0.2 -O 10
--o BGA1\_1.trimmed.fastq --trimmed-only
-
-
-
-
-
-
-
-
-
-Quality Treatment – Quality Trimming 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-Trim low quality 3'-ends (and 5'-ends)
-
--   Based on average q-score within a sliding window
-
-Quality Treatment – Quality Trimming 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-sickle se -f BGA1\_1.trimmed.fastq -t sanger -o
-BGA1\_1.trimmed.clipped.fastq -q 20 -n
-
-
-
-
-
-
-
-Trim reads
-----------
-
-Trim low quality 3'-ends (and 5'-ends)
-
--   Based on average q-score within a sliding window
-
-<!-- -->
-
--   '-q 20' = min average quality score of 20
--   '-t sanger' = Phred+33 q-score scale
--   '-n' = truncate at ambiguous (N) base calls
-
-Quality Treatment – Quality Trimming 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-sickle se -f BGA1\_1.trimmed.fastq -t sanger -o
-BGA1\_1.trimmed.clipped.fastq -q 20 -n
-
-
-
-
-
-
-
-Trim reads
-----------
-
-Trim low quality 3'-ends (and 5'-ends)
-
--   Based on average q-score within a sliding window
-
-<!-- -->
-
--   '-q 20' = min average quality score of 20
--   '-t sanger' = Phred+33 q-score scale
--   '-n' = truncate at ambiguous (N) base calls
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
+  FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
 BGA1\_1.trimmed.clipped.fastq.hist
 
 
-
 head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
-
-Compute read length histogram
------------------------------
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-
-
-
-
-
-
-
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
-BGA1\_1.trimmed.clipped.fastq.hist
-
-
-
-head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
-
-Compute read length histogram
------------------------------
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-
-
-
-
-
-
-
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
-BGA1\_1.trimmed.clipped.fastq.hist
-
-
-
-head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
-
-Compute read length histogram
------------------------------
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-
-
-
-
-
-
-
 
 fastq-mcf -0 -l 367 -L 463 n/a BGA1\_1.trimmed.clipped.fastq -o
 BGA1\_1.fastq
 
-Filter on length
-----------------
 
 FastQC - Revisited 
-^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-fastqc
-
-
-
-Start FastQC
-------------
+------------------
 
 -   … run batch mode on quality treated data
 -   … compare the raw with the hq data
 
-Quality Treatment - Pipeline 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-mkdir output
-
-
-
-cd output
-
-
-
-cp \~/scripts/qc\_pipeline.sh .
-
-
-
-
-
-
-
--   Exercise:
--   1: put previous commands into one shell script
--   2: execute this script on all PE FASTQ files
--   3: put all in this manner created HQ files in one directory in
--   \~/workdir/HQ
 
 Quality Treatment – Final Remarks 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
