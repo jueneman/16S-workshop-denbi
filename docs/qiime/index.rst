@@ -9,3 +9,5 @@ In the following, we will use Qiime2 to process our data and generate OTU tables
    step1
    step2
    step3
+   step4
+   step5
