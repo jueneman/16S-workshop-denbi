@@ -6,6 +6,6 @@ In the following, we will assess the data quality by looking at the sequencing e
 .. toctree::
    :maxdepth: 1
 
-   qc_preprocess
+   qcpreprocess
    fastqc
    
