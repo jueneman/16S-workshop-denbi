@@ -1,48 +1,13 @@
 **Quality Control & Pre-processing**
 ====================================
 
--   **Sebastian Jünemann**
--   CeBiTec, Bielefeld University, Germany
--   <jueneman@cebitec.uni-bielefeld.de>
-
-de.NBI Metagenomics Workshop
-
-Bielefeld
-
-27.03.-29.03.2018
-
-**Part I: Data Pre-Processing** {#part-i-data-pre-processing style="page-break-before:always; "}
-===============================
-
-**FASTQ Format** {#fastq-format style="page-break-before:always; "}
-================
-
-Part I: Data Pre-Processing
-
 **FASTQ Format** {#fastq-format-1 style="page-break-before:always; "}
 ================
 
-Part I: Data Pre-Processing
+![alt text][fastq]
 
-Quality
 
-Barcode
-
-Sequence
-
-Instrument Name
-
-Run ID
-
-Flowcell ID
-
-Flowcell lane
-
-Member of pair
-
-Filtered Y/N
-
-Control bits
+[fastq]: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png
 
 **Sequence Quality Scores** {#sequence-quality-scores style="page-break-before:always; "}
 ===========================
