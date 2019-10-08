@@ -190,7 +190,7 @@ We trim now our reads based on a 1.5*IQR window::
 - high = 461
 - n/a = we don't wanna use primer clipping, therefore don't provide such a file
 
-And again we run this on all of our data:
+And again we run this on all of our data::
 
   parallel "FastaStats.pl -q ../sickle/{}.clipped.fastq > {}.fastq.hist" ::: {BGA1_2,BGA2_1,BGA2_2,BGA3_1,BGA3_2,BGA4_1,BGA4_2}
   grep IQR *.hist
@@ -233,14 +233,14 @@ But always examine raw sequencing data!
 
 
 
-References:
-^^^^^^^^^^^
+References
+^^^^^^^^^^
 
-FastQC:  *→ http://www.bioinformatics.babraham.ac.uk/projects/fastqc/*
-Sickle:  *→ https://github.com/najoshi/sickle*
-cutadapt: *→ https://code.google.com/p/cutadapt/*
-FLASh: *→ http://ccb.jhu.edu/software/FLASH/*
-ea-utils: *→ https://code.google.com/p/ea-utils/*
+- FastQC:  *→ http://www.bioinformatics.babraham.ac.uk/projects/fastqc/*
+- Sickle:  *→ https://github.com/najoshi/sickle*
+- cutadapt: *→ https://code.google.com/p/cutadapt/*
+- FLASh: *→ http://ccb.jhu.edu/software/FLASH/*
+- ea-utils: *→ https://code.google.com/p/ea-utils/*
 
 
 
