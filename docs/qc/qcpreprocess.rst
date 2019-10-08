@@ -3,6 +3,7 @@ Quality Treatment
 
 - Reads contain errors (0.1-15%) and contamination
 - Quality matters!?
+
    - NGS high throughput = lots of data
    - The more data the more errors (systematic errors)
    - 16S data &gt; WGS read-based &gt; WGS assembly-based
@@ -61,20 +62,20 @@ If you have more information about the amplified fragment, you can adjust min/ma
 Primer Clipping 
 ---------------
 
-First we need to know which primer sequences weree used to asmplify our region of interest:
+First we need to know which primer sequences weree used to asmplify our region of interest
 
 +---------------+--------+--------------------------|
 | Domain        | Primer | Sequence                 |
-+---------------+------- +--------------------------+
-| Bacteria      | F939   | GAATTGACGGGGGCCCGCACAAG  |
-| Bacteria      | R1378  | CGGTGTGTACAAGGCCCGGGAACG |
++===============+========+==========================+
+| Bacteria  RRS | F939   | GAATTGACGGGGGCCCGCACAAG  |
+| Bacteria  RRS | R1378  | CGGTGTGTACAAGGCCCGGGAACG |
 +---------------+--------+--------------------------+
 
-We are going to use cutadapt to search for and remove any found primers sequences from the merged reads:
+We are going to use cutadapt to search for and remove any found primers sequences from the merged reads::
 
-  mkdir ~/workdir/cutadapt
-  cd ~/workdir/cutadapt
-  cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/058.extendedFrags.fastq -e 0.2 -O 10 -o 058.trimmed.fastq
+   mkdir ~/workdir/cutadapt
+   cd ~/workdir/cutadapt
+   cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/058.extendedFrags.fastq -e 0.2 -O 10 -o 058.trimmed.fastq
 
 
 - '^' = anchoring the rpimer at the 5' end of the reads
@@ -82,12 +83,6 @@ We are going to use cutadapt to search for and remove any found primers sequence
 - '-O *10*' = min overlap of ten bases
 
 ```
-This is cutadapt 2.4 with Python 3.6.7
-Command line parameters: -g ^GAATTGACGGGGGCCCGCACAAG ../flash/058.extendedFrags.fastq -e 0.2 -O 10 -o 058.trimmed.fastq
-Processing reads on 1 core in single-end mode ...
-[8<----------] 00:00:00        37,934 reads  @     13.5 µs/read;   4.46 M reads/minute
-Finished in 0.51 s (14 us/read; 4.43 M reads/minute).
-
 === Summary ===
 
 Total reads processed:                  37,934
