@@ -19,20 +19,21 @@ De-replication is the process of collapsing identical reads into single read rep
    --o-dereplicated-table bga_joined_demux_derep_table.qza \
    --o-dereplicated-sequences bga_joined_demux_derep.qza \
    --verbose
-   
- In order to inspect to what extent the de-replication process reduced the datasets, we can again visualize the results.
- First on the feature table::
+ 
+ 
+In order to inspect to what extent the de-replication process reduced the datasets, we can again visualize the results.
+First on the feature table::
    
    qiime feature-table summarize \
    --i-table bga_joined_demux_derep_table.qza \
    --o-visualization bga_joined_demux_derep_table.qza
  
- Then on the reads::
+Then on the reads::
  
    qiime feature-table tabulate-seqs \
    --i-data bga_joined_demux_derep.qza \
    --o-visualization bga_joined_demux_derep.qza
- 
+
 This time, let's use the q2studio to inspect the results. To start q2studio, open a new terminal and::
 
    cd ~/workdir
