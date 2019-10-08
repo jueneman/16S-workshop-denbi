@@ -3,13 +3,13 @@ Quality Treatment
 
 - Reads contain errors (0.1-15%) and contamination
 
-* - Quality matters!?
--   NGS high throughput = lots of data
--   The more data the more errors (systematic errors)
--   16S data &gt; WGS read-based &gt; WGS assembly-based
--   Better data = lower computational cost
--   Decrease of false positives
--   But: always trade-off (false negatives)
+- Quality matters!?
+  * NGS high throughput = lots of data
+  * The more data the more errors (systematic errors)
+  * 16S data &gt; WGS read-based &gt; WGS assembly-based
+  * Better data = lower computational cost
+  * Decrease of false positives
+  * But: always trade-off (false negatives)
 
 Quality based filtering vs error correction
 
