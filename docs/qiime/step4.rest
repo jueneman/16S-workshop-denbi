@@ -65,18 +65,51 @@ Now, we extract only the target region from that reference::
     --p-max-length 600 \
     --o-reads silva_132_99_16S_V3V4.qza
 
+And then train the classifier on that data::
 
+  qiime feature-classifier fit-classifier-naive-bayes \
+    --i-reference-reads silva_132_99_16S_V3V4.qza \
+    --i-reference-taxonomy silva_taxonomy.qza \
+    --o-classifier silva_132_99_16S_V3V4_classifier.qza
+
+Now that our classifier is ready to use, we taxonomically classify both our OTUs and the ASVs::
 
   qiime feature-classifier classify-sklearn \
-  --i-classifier silva-132-99-515-806-nb-classifier.qza  \
+  --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
   --i-reads bga_oref_seqs.qza \
   --o-classification bga_oref_seqs_taxonomy.qza \
   --verbose
 
   qiime feature-classifier classify-sklearn \
-  --i-classifier silva-132-99-515-806-nb-classifier.qza  \
+  --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
   --i-reads rep-seqs-dada2.qza \
   --o-classification rep-seqs-dada2-taxonomy.qza \
   --verbose
 
-  
+And visualize the results::
+
+  qiime metadata tabulate \
+    --m-input-file bga_oref_seqs_taxonomy.qza \
+    --o-visualization bga_oref_seqs_taxonomy.qzv
+    
+  qiime metadata tabulate \
+    --m-input-file rep-seqs-dada2-taxonomy.qza \
+    --o-visualization rep-seqs-dada2-taxonomy.qzv
+
+In addition, we can view the taxonomic composition of our samples with interactive bar plots. Generate those plots with the following command and then open the visualization::
+
+  qiime taxa barplot \
+    --i-table bga_oref_table.qza \
+    --i-taxonomy bga_oref_seqs_taxonomy.qza \
+    --m-metadata-file combined_mapping.txt	\
+    --o-visualization oref-taxa-bar-plots.qzv
+
+  qiime taxa barplot \
+    --i-table table-dada2.qza \
+    --i-taxonomy rep-seqs-dada2-taxonomy.qza \
+    --m-metadata-file combined_mapping.txt	\
+    --o-visualization dada2-taxa-bar-plots.qzv
+
+
+
+
