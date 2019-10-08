@@ -21,11 +21,12 @@ Typical workflow:
 .. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/workflow.png
 
 For this exercise:
- - Only 16S data
- - Merge: FLASh
- - Clip primers: cutadapt
- - Trim quality: sickle
- - Filter length: ea-utils
+
+- Only 16S data
+- Merge: FLASh
+- Clip primers: cutadapt
+- Trim quality: sickle
+- Filter length: ea-utils
 
 Merge reads
 -----------
@@ -76,325 +77,116 @@ We are going to use cutadapt to search for and remove any found primers sequence
 
    mkdir ~/workdir/cutadapt
    cd ~/workdir/cutadapt
-   cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/058.extendedFrags.fastq -e 0.2 -O 10 -o 058.trimmed.fastq
+   cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/057.extendedFrags.fastq -e 0.2 -O 10 -o 057.trimmedf.fastq
 
 
 - '^' = anchoring the rpimer at the 5' end of the reads
 - '*-e 0.2*' = max error rate of 20%
 - '-O *10*' = min overlap of ten bases
 
-```
-=== Summary ===
+-  cutadapt very useful for primer & adapter trimming
+-  Accepts wobble bases
+-  Adjust '*stringency*' parameter to your needs
+-  Inspect output closely (to many / suspicious trimmed reads)
 
-Total reads processed:                  37,934
-Reads with adapters:                    37,888 (99.9%)
-Reads written (passing filters):        37,934 (100.0%)
+Let's have a look at our first attempt
 
-Total basepairs processed:    18,381,440 bp
-Total written (filtered):     17,510,019 bp (95.3%)
+.. code-block::
+  === Summary ===
 
-=== Adapter 1 ===
+  Total reads processed:                  48,997
+  Reads with adapters:                    48,940 (99.9%)
+  Reads written (passing filters):        48,997 (100.0%)
 
-Sequence: GAATTGACGGGGGCCCGCACAAG; Type: anchored 5'; Length: 23; Trimmed: 37888 times.
+  Total basepairs processed:    23,778,470 bp
+  Total written (filtered):     22,652,907 bp (95.3%)
 
-No. of allowed errors:
-0-4 bp: 0; 5-9 bp: 1; 10-14 bp: 2; 15-19 bp: 3; 20-23 bp: 4
+  === Adapter 1 ===
 
-Overview of removed sequences
-length	count	expect	max.err	error counts
-19	6	0.0	3	0 0 0 0 6
-20	17	0.0	4	0 0 0 16 1
-21	28	0.0	4	0 0 22 6
-22	321	0.0	4	0 280 39 2
-23	37317	0.0	4	36508 785 21 3
-24	37	0.0	4	0 29 5 2 1
-25	74	0.0	4	0 0 63 3 8
-26	88	0.0	4	0 0 0 87 1
-```
+  Sequence: GAATTGACGGGGGCCCGCACAAG; Type: anchored 5'; Length: 23; Trimmed: 48940 times.
 
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  No. of allowed errors:
+  0-4 bp: 0; 5-9 bp: 1; 10-14 bp: 2; 15-19 bp: 3; 20-23 bp: 4
 
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-cat Primers.txt
+  Overview of removed sequences
+  length	count	expect	max.err	error counts
+  19	11	0.0	3	0 0 0 0 11
+  20	23	0.0	4	0 0 0 22 1
+  21	36	0.0	4	0 0 30 5 1
+  22	478	0.0	4	0 422 52 4
+  23	48137	0.0	4	47081 1031 16 7 2
+  24	42	0.0	4	0 34 7 1
+  25	75	0.0	4	0 0 65 3 7
+  26	138	0.0	4	0 0 0 136 2
 
 
 
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --untrimmed-output
-BGA1\_1.f\_utr.fastq
+Now we trim off the reverse primer::
 
+   mkdir ~/workdir/cutadapt
+   cd ~/workdir/cutadapt
+   cutadapt -a CGGTGTGTACAAGGCCCGGGAACG$ 057.trimmedf.fastq -e 0.2 -O 10 -o 057.trimmedfr.fastq
 
+Now, apparently that didn't worked out. The problem is, that the primer is given 5'-3' and by merging our reads the reverse reads now is the reverse complement of the original read, so the primer als needs to be reverse complemented.
 
+Let us quickly do that by creating a new fasta file and call `rev`::
 
+  cd ~/workdir
+  echo -e ">primer\nCGGTGTGTACAAGGCCCGGGAACG" > revprimer.fas
+  revseq -sequence revprimer.fas -outseq revprimer_rc.fas
+  cat revprimer_rc.fas
+  
+We can use the correct primer now to trim our reads at the 3' end::
 
--   cutadapt very useful for primer & adapter trimming
--   Accepts wobble bases
--   Adjust '*stringency*' parameter to your needs
--   Inspect output closely (to many / suspicious trimmed reads)
+   cd ~/workdir/cutadapt
+   cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ 057.trimmedf.fastq -e 0.2 -O 10 -o 057.trimmedfr.fastq
 
-<!-- -->
+Finally, we do that for all of our datasets::
 
--   '*-e 0.2*' = max error rate of 20%
--   '-O *10*' = min overlap of ten bases
+  cd ~/workdir/cutadapt
+  parallel "cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/058.extendedFrags.fastq -e 0.2 -O 10 -o 058.trimmedf.fastq" ::: {058,068,074}
+  cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ 058.trimmedf.fastq -e 0.2 -O 10 -o 058.trimmedfr.fastq
 
---help is your friend
+  
 
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-cat Primers.txt
-
-
-
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --untrimmed-output
-BGA1\_1.f\_utr.fastq
-
-
-
-
-
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-cat Primers.txt
-
-
-
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --trimmed-only
-
-
-
-cutadapt -a GGATTAGATACCCBDGTAGTC\$ BGA1\_1.f\_tr.fastq -e 0.2 -O 10
--o BGA1\_1.trimmed.fastq --trimmed-only
-
-
-
-
-
-
-
-
-
-Quality Treatment – Quality Trimming 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
+Quality Trimming 
+----------------
 
 Trim low quality 3'-ends (and 5'-ends)
 
 -   Based on average q-score within a sliding window
-
-Quality Treatment – Quality Trimming 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
 
 sickle se -f BGA1\_1.trimmed.fastq -t sanger -o
 BGA1\_1.trimmed.clipped.fastq -q 20 -n
-
-
-
-
-
-
-
-Trim reads
-----------
-
-Trim low quality 3'-ends (and 5'-ends)
-
--   Based on average q-score within a sliding window
-
-<!-- -->
 
 -   '-q 20' = min average quality score of 20
 -   '-t sanger' = Phred+33 q-score scale
 -   '-n' = truncate at ambiguous (N) base calls
 
-Quality Treatment – Quality Trimming 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-sickle se -f BGA1\_1.trimmed.fastq -t sanger -o
-BGA1\_1.trimmed.clipped.fastq -q 20 -n
 
 
-
-
-
-
-
-Trim reads
-----------
-
-Trim low quality 3'-ends (and 5'-ends)
-
--   Based on average q-score within a sliding window
-
-<!-- -->
-
--   '-q 20' = min average quality score of 20
--   '-t sanger' = Phred+33 q-score scale
--   '-n' = truncate at ambiguous (N) base calls
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
+Lenght Filtering
+----------------
 
 -   Remove reads which are to short (generally)
 -   Remove reads out of fragment length (16S hypervariable region)
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
 
 FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
 BGA1\_1.trimmed.clipped.fastq.hist
 
 
-
 head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
-
-Compute read length histogram
------------------------------
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-
-
-
-
-
-
-
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
-BGA1\_1.trimmed.clipped.fastq.hist
-
-
-
-head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
-
-Compute read length histogram
------------------------------
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-
-
-
-
-
-
-
-
-Quality Treatment – Filter Length 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-
-Part I: Data Pre-Processing
-
-FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
-BGA1\_1.trimmed.clipped.fastq.hist
-
-
-
-head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
-
-Compute read length histogram
------------------------------
-
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
-
-
-
-
-
-
-
-
 
 fastq-mcf -0 -l 367 -L 463 n/a BGA1\_1.trimmed.clipped.fastq -o
 BGA1\_1.fastq
 
-Filter on length
-----------------
 
 FastQC - Revisited 
 ^^^^^^^^^^^^^^^^^^^^^=
 
-Part I: Data Pre-Processing
-
-fastqc
-
-
-
-Start FastQC
-------------
-
 -   … run batch mode on quality treated data
 -   … compare the raw with the hq data
 
-Quality Treatment - Pipeline 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
-
-
-
-mkdir output
-
-
-
-cd output
-
-
-
-cp \~/scripts/qc\_pipeline.sh .
-
-
-
-
-
-
-
--   Exercise:
--   1: put previous commands into one shell script
--   2: execute this script on all PE FASTQ files
--   3: put all in this manner created HQ files in one directory in
--   \~/workdir/HQ
 
 Quality Treatment – Final Remarks 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
