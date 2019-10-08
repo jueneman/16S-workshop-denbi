@@ -1,29 +1,50 @@
 Chimera Detection with VSearch
 ------------------------------
 
-Vsearch is an alternative to the USEARCH tool developed by Robert C. Edgar (2010). The new tool should:
+Vsearch is an alternative to the USEARCH tool developed by Robert C. Edgar (2010). It offers:
 
-   - have open source code with an appropriate open source license
-   - be free of charge, gratis
-   - have a 64-bit design that handles very large databases and much more than 4GB of memory
-   - be as accurate or more accurate than usearch
-   - be as fast or faster than usearch
+- have open source code with an appropriate open source license
+- be free of charge, gratis
+- have a 64-bit design that handles very large databases and much more than 4GB of memory
+- be as accurate or more accurate than usearch
+- be as fast or faster than usearch
 
+De-replicate Reads
+^^^^^^^^^^^^^^^^^^
 
+De-replication is the process of collapsing identical reads into single read representation while preserving the number of identical reads in some kind of mapping files. There are dozens of tools which can perform de-replication, also all sequence based clustering tools using an identity cutoff of 100%, but we will use vsearch for that::
 
+   qiime vsearch dereplicate-sequences \ 
+   --i-sequences bga_joined_demux.qza \
+   --o-dereplicated-table bga_joined_demux_derep_table.qza \
+   --o-dereplicated-sequences bga_joined_demux_derep.qza \
+   --verbose
+   
+ In order to inspect to what extent the de-replication process reduced the datasets, we can again visualize the results.
+ First on the feature table::
+   
+   qiime feature-table summarize \
+   --i-table bga_joined_demux_derep_table.qza \
+   --o-visualization bga_joined_demux_derep_table.qza
+ 
+ Then on the reads::
+ 
+   qiime feature-table tabulate-seqs \
+   --i-data bga_joined_demux_derep.qza \
+   --o-visualization bga_joined_demux_derep.qza
+ 
+This time, let's use the q2studio to inspect the results. To start q2studio, open a new terminal and::
 
-Filter Potential Chimeric Sequences I 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
+   cd ~/workdir
+   conda activate mgcourse
+   q2studio
+ 
+Then scroll down and find the visualizations, which can be selected to show the results in a new window.
 
-qiime vsearch dereplicate-sequences 
+Filter Potential Chimeric Sequences
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
---i-sequences bga_joined_demux.qza 
-
---o-dereplicated-table bga_joined_demux_derep_table.qza
---o-dereplicated-sequences bga_joined_demux_derep.qza
-
-
-
+Vsearch is integrated into qiime and can be called directly as a qiime function::
 
 
 qiime vsearch uchime-denovo 
