@@ -1,8 +1,8 @@
 **Quality Control & Pre-processing**
 ====================================
 
-**FASTQ Format** {#fastq-format-1 style="page-break-before:always; "}
-================
+**FASTQ Format** 
+^^^^^^^^^^^^^^^^
 
 ![fastq](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
 
