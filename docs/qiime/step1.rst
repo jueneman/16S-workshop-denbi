@@ -5,59 +5,59 @@ Import your quality treated data
 First of all, we will import our already demultiplexed, paired-end assembled and quality filtered reads as a Qiime2 Project. In order to do so, we first need to copy our manifest and mapping files into our workdir::
 
 
-**&gt; cd ~/workdir**
+ cd ~/workdir
 
-**&gt; cp ~/16Sdata/HQ/manifest.txt HQ/**
+ cp ~/16Sdata/HQ/manifest.txt HQ/
 
-**&gt; cp ~/16Sdata/combined_mapping.txt .**
+ cp ~/16Sdata/combined_mapping.txt .
 
-&gt;qiime demux summarize 
+qiime demux summarize 
 
 --i-data bga_joined_demux.qza 
 
 --o-visualization bga_joined_demux.qzv
 
-&gt;cp bga_joined_demux.qzv ~/www
+cp bga_joined_demux.qzv ~/www
 
 Inspect results:
 
 Split your libraries 
 ^^^^^^^^^^^^^^^^^^^^
 
-**&gt; cd ~/workdir**
+ cd ~/workdir
 
-**&gt; cp -r ~/DATA/HQ/ .**
+ cp -r ~/DATA/HQ/ .
 
-**&gt; cp ~/DATA/combined_mapping.txt .**
+ cp ~/DATA/combined_mapping.txt .
 
 Import your quality treated data 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**&gt; qiime tools import **
+ qiime tools import 
 
-**--type SampleData[JoinedSequencesWithQuality] **
+--type SampleData[JoinedSequencesWithQuality] 
 
-**--source-format SingleEndFastqManifestPhred33 **
+--source-format SingleEndFastqManifestPhred33 
 
-**--input-path HQ/manifest.txt **
+--input-path HQ/manifest.txt 
 
-**--output-path bga_joined_demux**
+--output-path bga_joined_demux
 
-&gt;qiime demux summarize 
+qiime demux summarize 
 
 --i-data bga_joined_demux.qza 
 
 --o-visualization bga_joined_demux.qzv
 
-&gt;cp bga_joined_demux.qzv ~/www
+cp bga_joined_demux.qzv ~/www
 
 Inspect results:
 
-**&gt; cd ~/workdir**
+ cd ~/workdir
 
-**&gt; cp -r ~/DATA/HQ/ .**
+ cp -r ~/DATA/HQ/ .
 
-**&gt; cp ~/DATA/combined_mapping.txt .**
+ cp ~/DATA/combined_mapping.txt .
 
 How did QIIME 2 know what happened? 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -89,47 +89,47 @@ No standardized error handling pipeline
 Chimeric Formations 
 ^^^^^^^^^^^^^^^^^^=
 
-**Two possaible reasons:**
+Two possaible reasons:
 
--   **By incomplete extension**
--   **By template switching**
+-   By incomplete extension
+-   By template switching
 
-**Positive correlation with PCR cycles (saturation)**
+Positive correlation with PCR cycles (saturation)
 
-**Negative correlation with sample diversity**
+Negative correlation with sample diversity
 
-**Typically chimeras amounts to a lesser fraction**
-
-Chimeric Formations 
-^^^^^^^^^^^^^^^^^^=
-
-**Incomplete Extension Type A**
-
-**Incomplete Extension Type B**
+Typically chimeras amounts to a lesser fraction
 
 Chimeric Formations 
 ^^^^^^^^^^^^^^^^^^=
 
-**Template Switch Type A**
+Incomplete Extension Type A
 
-**Template Switch Type B**
+Incomplete Extension Type B
+
+Chimeric Formations 
+^^^^^^^^^^^^^^^^^^=
+
+Template Switch Type A
+
+Template Switch Type B
 
 Chimera Detection 
 ^^^^^^^^^^^^^^^^^
 
-**Before NGS**
+Before NGS
 
--   **manually curated + semi automated methods**
--   **Data base screening**
--   **Requiring almost full length + slow**
+-   manually curated + semi automated methods
+-   Data base screening
+-   Requiring almost full length + slow
 
-**After NGS**
+After NGS
 
-**High throughput + short reads**
+High throughput + short reads
 
-**de novo (intrinsic) and reference based (extrinsic)**
+de novo (intrinsic) and reference based (extrinsic)
 
-**Most widely used tool: usearch (formerly uchime)**
+Most widely used tool: usearch (formerly uchime)
 
 -   → utilized in qiime (and mothur, and ...)
 
@@ -156,59 +156,59 @@ De novo mode starts with empty reference database
 Filter Potential Chimeric Sequences I 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
 
-**&gt;qiime vsearch dereplicate-sequences **
+qiime vsearch dereplicate-sequences 
 
-**--i-sequences bga_joined_demux.qza **
+--i-sequences bga_joined_demux.qza 
 
-**--o-dereplicated-table bga_joined_demux_derep_table.qza
---o-dereplicated-sequences bga_joined_demux_derep.qza**
+--o-dereplicated-table bga_joined_demux_derep_table.qza
+--o-dereplicated-sequences bga_joined_demux_derep.qza
 
-****
 
-****
 
-**&gt;qiime vsearch uchime-denovo **
 
-**--i-sequences bga_joined_demux_derep.qza **
 
-**--i-table bga_joined_demux_derep_table.qza **
+qiime vsearch uchime-denovo 
 
-**--output-dir vsearch-cc-out **
+--i-sequences bga_joined_demux_derep.qza 
 
-**--verbose**
+--i-table bga_joined_demux_derep_table.qza 
 
-&gt;qiime metadata tabulate 
+--output-dir vsearch-cc-out 
+
+--verbose
+
+qiime metadata tabulate 
 
 -m-input-file vsearch-cc-out/stats.qza 
 
 --o-visualization vsearch-cc-out/stats.qzv
 
-&gt;cp vsearch-cc-out/stats.qzv ~/www
+cp vsearch-cc-out/stats.qzv ~/www
 
 Inspect results:
 
 Filter Potential Chimeric Sequences II 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**&gt;qiime feature-table filter-features **
+qiime feature-table filter-features 
 
-**--i-table bga_joined_demux_derep_table.qza **
+--i-table bga_joined_demux_derep_table.qza 
 
-**--m-metadata-file vsearch-cc-out/nonchimeras.qza **
+--m-metadata-file vsearch-cc-out/nonchimeras.qza 
 
-**--o-filtered-table bga_joined_demux_derep_nonch_table.qza**
+--o-filtered-table bga_joined_demux_derep_nonch_table.qza
 
-****
 
-**&gt;qiime feature-table filter-seqs **
 
-**--i-data bga_joined_demux_derep.qza **
+qiime feature-table filter-seqs 
 
-**--m-metadata-file vsearch-cc-out/nonchimeras.qza **
+--i-data bga_joined_demux_derep.qza 
 
-**--o-filtered-data bga_joined_demux_derep_nonch.qza**
+--m-metadata-file vsearch-cc-out/nonchimeras.qza 
 
-&gt;qiime feature-table summarize 
+--o-filtered-data bga_joined_demux_derep_nonch.qza
+
+qiime feature-table summarize 
 
 --i-table bga_joined_demux_derep_nonch_table.qza 
 
@@ -216,21 +216,21 @@ Filter Potential Chimeric Sequences II
 
 --o-visualization bga_joined_demux_derep_nonch_table.qzv
 
-&gt;cp bga_joined_demux_derep_nonch_table.qzv ~/www
+cp bga_joined_demux_derep_nonch_table.qzv ~/www
 
 Inspect results:
 
  
 
-**OTU Table**
+OTU Table
 
-****
 
-****
+
+
 
 (i.e. per sample OTU counts)
 
-**Phylogenetic Tree**
+Phylogenetic Tree
 
 Evolutionary relationship between OTUs
 
@@ -242,13 +242,13 @@ Denoise 454 Data
 
 PyroNoise, Denoiser
 
-**Sequencing output**
+Sequencing output
 
 (Illumina, 454, Sanger)
 
 FASTA, QUAL, sff/trace files
 
-**Metadata**
+Metadata
 
 Mapping file
 
@@ -258,19 +258,19 @@ Submit sequences and metadata to SRA
 
 Pick OTUs and representative sequences
 
-**Reference based**
+Reference based
 
 usearch, uclust, MOTHUR, blast
 
-**De novo**
+De novo
 
-****
+
 
 Usearch, uclust, CD-HIT, MOTHUR
 
-**Open reference**
+Open reference
 
-****
+
 
 Combination of reference based and De novo approach
 
@@ -337,8 +337,8 @@ A “Thing“:
 OTUs – Operational Taxonomic Unit 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Operational taxonomic units are more generally referred to as
-features.**
+Operational taxonomic units are more generally referred to as
+features.
 
 OTUs – Operational Taxonomic Unit 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -372,74 +372,74 @@ For referenced based clustering, reference OTUs must be provided.
 
 → look for more: http://qiime.org/home_static/dataFiles.html
 
-**&gt; cd ~/workdir**
+ cd ~/workdir
 
-**&gt; cp ~/DATA/database/silva_128/97/97_otus_16S.fasta .**
+ cp ~/DATA/database/silva_128/97/97_otus_16S.fasta .
 
-**&gt; cp
-~/DATA/database/silva_128/97/consensus_taxonomy_all_levels.txt .**
+ cp
+~/DATA/database/silva_128/97/consensus_taxonomy_all_levels.txt .
 
-****
 
-****
 
-**&gt; qiime tools import --type FeatureData[Sequence] **
 
-**--input-path 97_otus_16S.fasta **
 
-**--output-path 97_otus_16S.qza**
+ qiime tools import --type FeatureData[Sequence] 
 
-****
+--input-path 97_otus_16S.fasta 
 
-****
+--output-path 97_otus_16S.qza
 
-**&gt; qiime tools import --type FeatureData[Taxonomy] **
 
-**--source-format HeaderlessTSVTaxonomyFormat **
 
-**--input-path consensus_taxonomy_all_levels.txt **
 
-**--output-path consensus_taxonomy_all_levels.qza**
 
-****
+ qiime tools import --type FeatureData[Taxonomy] 
 
-****
+--source-format HeaderlessTSVTaxonomyFormat 
 
-****
+--input-path consensus_taxonomy_all_levels.txt 
+
+--output-path consensus_taxonomy_all_levels.qza
+
+
+
+
+
+
 
 Open reference based OTU clustering 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Cluster and post-process your quality controlled and merged input
-sequences using **vsearch**
+sequences using vsearch
 
-**qiime vsearch cluster-features-open-reference **
+qiime vsearch cluster-features-open-reference 
 
-**--i-table bga_joined_demux_derep_nonch_table.qza **
+--i-table bga_joined_demux_derep_nonch_table.qza 
 
-**--i-sequences bga_joined_demux_derep_nonch.qza **
+--i-sequences bga_joined_demux_derep_nonch.qza 
 
-**--o-clustered-table bga_oref_table.qza **
+--o-clustered-table bga_oref_table.qza 
 
-**--o-clustered-sequences bga_oref_seqs.qza **
+--o-clustered-sequences bga_oref_seqs.qza 
 
-**--o-new-reference-sequences bga_oref_newref_seqs.qza **
+--o-new-reference-sequences bga_oref_newref_seqs.qza 
 
-**--output-dir openref **
+--output-dir openref 
 
-**--p-perc-identity 0.97 **
+--p-perc-identity 0.97 
 
-**--p-threads 14 **
+--p-threads 14 
 
-**--i-reference-sequences 97_otus_16S.qza **
+--i-reference-sequences 97_otus_16S.qza 
 
-**--verbose**
+--verbose
 
-****
 
-****
 
-****
+
+
+
 
 This will take some time (even hours for very large data sets)!
 
@@ -508,7 +508,7 @@ Good for high amount of data (can be slow)
 
 Pre-filter
 
--   Low identity threshold (&gt;60%) against reference dataset → failing
+-   Low identity threshold (60%) against reference dataset → failing
     reads are discarded
 
 Four step clustering
@@ -531,7 +531,7 @@ open reference
 Post-OTU processing
 
 -   Merge OTU maps from previous steps into one table
--   Filter singletons → only OTUs with size &gt;2 are considered
+-   Filter singletons → only OTUs with size 2 are considered
     (threshold adjustable)
 -   Pick one representatives per OTU & assign taxonomy
 -   Align representatives with PyNast → construct a phylogenetic tree
@@ -574,15 +574,15 @@ http://www.drive5.com/usearch/manual/uclust_algo.htm
 
  
 
-**OTU Table**
+OTU Table
 
-****
 
-****
+
+
 
 (i.e. per sample OTU counts)
 
-**Phylogenetic Tree**
+Phylogenetic Tree
 
 Evolutionary relationship between OTUs
 
@@ -594,13 +594,13 @@ Denoise 454 Data
 
 PyroNoise, Denoiser
 
-**Sequencing output**
+Sequencing output
 
 (Illumina, 454, Sanger)
 
 FASTA, QUAL, sff/trace files
 
-**Metadata**
+Metadata
 
 Mapping file
 
@@ -610,19 +610,19 @@ Submit sequences and metadata to SRA
 
 Pick OTUs and representative sequences
 
-**Reference based**
+Reference based
 
 usearch, uclust, MOTHUR, blast
 
-**De novo**
+De novo
 
-****
+
 
 Usearch, uclust, CD-HIT, MOTHUR
 
-**Open reference**
+Open reference
 
-****
+
 
 Combination of reference based and De novo approach
 
@@ -705,111 +705,111 @@ Taxonomic classification via RDP naive Bayesian classifier
 Generate ASVs with DaDa2 
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-**qiime tools import **
+qiime tools import 
 
-**--type SampleData[PairedEndSequencesWithQuality] **
+--type SampleData[PairedEndSequencesWithQuality] 
 
-**--source-format PairedEndFastqManifestPhred33 **
+--source-format PairedEndFastqManifestPhred33 
 
-**--input-path raw_data/manifest.txt **
+--input-path raw_data/manifest.txt 
 
-**--output-path bga_demux.qza**
+--output-path bga_demux.qza
 
-****
 
-****
 
-**qiime dada2 denoise-paired **
 
-**--i-demultiplexed-seqs bga_demux.qza **
 
-**--o-table bga_dada2_table.qza **
+qiime dada2 denoise-paired 
 
-**--o-representative-sequences bag_dada2_seqs.qza **
+--i-demultiplexed-seqs bga_demux.qza 
 
-**--p-trim-left-f 16 **
+--o-table bga_dada2_table.qza 
 
-**--p-trim-left-r 21 **
+--o-representative-sequences bag_dada2_seqs.qza 
 
-**--p-trunc-len-f 250 **
+--p-trim-left-f 16 
 
-**--p-trunc-len-r 250 **
+--p-trim-left-r 21 
 
-**--p-n-threads 14 **
+--p-trunc-len-f 250 
 
-**--p-n-reads-learn 200000 **
+--p-trunc-len-r 250 
 
-**--verbose**
+--p-n-threads 14 
 
-****
+--p-n-reads-learn 200000 
 
-****
+--verbose
 
-****
 
-****
+
+
+
+
+
+
 
 Taxonomic Classification 
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-****
 
-**wget
-https://data.qiime2.org/2018.2/common/gg-13-8-99-515-806-nb-classifier.qza**
 
-****
+wget
+https://data.qiime2.org/2018.2/common/gg-13-8-99-515-806-nb-classifier.qza
 
-**qiime feature-classifier classify-sklearn **
 
-**--i-classifier gg-13-8-99-515-806-nb-classifier.qza **
 
-**--i-reads bga_oref_seqs.qza **
+qiime feature-classifier classify-sklearn 
 
-**--o-classification bga_oref_taxonomy.qza**
+--i-classifier gg-13-8-99-515-806-nb-classifier.qza 
 
-****
+--i-reads bga_oref_seqs.qza 
 
-**qiime feature-classifier classify-sklearn **
+--o-classification bga_oref_taxonomy.qza
 
-**--i-classifier gg-13-8-99-515-806-nb-classifier.qza **
 
-**--i-reads bga_dada2_seqs.qza **
 
-**--o-classification bga_dada2_taxonomy.qza**
+qiime feature-classifier classify-sklearn 
 
-****
+--i-classifier gg-13-8-99-515-806-nb-classifier.qza 
 
-****
+--i-reads bga_dada2_seqs.qza 
 
-****
+--o-classification bga_dada2_taxonomy.qza
 
-****
 
-****
+
+
+
+
+
+
+
+
 
 Resources 
 ^^^^^^^^^
 
-[**http://qiime.org/tutorials/tutorial.html**](http://qiime.org/tutorials/tutorial.html)
+[http://qiime.org/tutorials/tutorial.html](http://qiime.org/tutorials/tutorial.html)
 ----------------------------------------------------------------------------------------
 
-****
+
 ----
 
-****
+
 ----
 
-**… now better use:**
+… now better use:
 ---------------------
 
-****
+
 ----
 
-[**https://docs.qiime2.org/**](https://docs.qiime2.org/)
+[https://docs.qiime2.org/](https://docs.qiime2.org/)
 --------------------------------------------------------
 
-****
+
 ----
 
-****
+
 ----
