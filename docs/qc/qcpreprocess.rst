@@ -60,6 +60,14 @@ If you have more information about the amplified fragment, you can adjust min/ma
 Primer Clipping 
 ---------------
 
++---------------+--------+------------------------------------------------------------|
+| Domain        | Primer | Sequence                                                   |
++---------------+------- +------------------------------------------------------------+
+| Bacteria      | F939   | TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGGAATTGACGGGGGCCCGCACAAG   |
+| Bacteria      | R1378  | GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAGCGGTGTGTACAAGGCCCGGGAACG |
++---------------+--------+------------------------------------------------------------|
+
+
 Part I: Data Pre-Processing
 
 cd \~/workdir/raw\_data
