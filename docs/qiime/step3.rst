@@ -9,6 +9,7 @@ For this tutorial, we have take the reference sequences along with their taxonom
 and
 
 - http://qiime.org/home_static/dataFiles.html
+- https://docs.qiime2.org/2019.7/data-resources/
 
 All requeired files have been uploaded to the public object storage in the cloud. To download it, do::
 
