@@ -89,9 +89,8 @@ We are going to use cutadapt to search for and remove any found primers sequence
 -  Adjust '*stringency*' parameter to your needs
 -  Inspect output closely (to many / suspicious trimmed reads)
 
-Let's have a look at our first attempt
+Let's have a look at our first attempt::
 
-.. code-block::
   === Summary ===
 
   Total reads processed:                  48,997
@@ -144,34 +143,44 @@ We can use the correct primer now to trim our reads at the 3' end::
 Finally, we do that for all of our datasets::
 
   cd ~/workdir/cutadapt
-  parallel "cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/058.extendedFrags.fastq -e 0.2 -O 10 -o 058.trimmedf.fastq" ::: {058,068,074}
-  cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ 058.trimmedf.fastq -e 0.2 -O 10 -o 058.trimmedfr.fastq
-
+  parallel "cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/{}.extendedFrags.fastq -e 0.2 -O 10 -o {}.trimmedf.fastq" ::: {058,068,074}
+  parallel "cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ {}.trimmedf.fastq -e 0.2 -O 10 -o {}.trimmedfr.fastq" ::: {058,068,074}
   
 
 Quality Trimming 
 ----------------
 
-Trim low quality 3'-ends (and 5'-ends)
+Usually, reads with very low quality consist of many miscalled bases, which can influence any consecutive processing step by inflating cluster numbers or decreasing alignment quality. Therefore, we are going to trim of low quality 3'-ends (and 5'-ends).
 
--   Based on average q-score within a sliding window
+For that we use sickle, which trims based on average q-score within a sliding window approach::
 
-sickle se -f BGA1\_1.trimmed.fastq -t sanger -o
-BGA1\_1.trimmed.clipped.fastq -q 20 -n
+  mkdir -p ~/workdir/sickle
+  cd ~/workdir/sickle
+  sickle se -f ../cutadapt/057.trimmedfr.fastq -t sanger -q20 -o 057.clipped.fastq
 
--   '-q 20' = min average quality score of 20
--   '-t sanger' = Phred+33 q-score scale
--   '-n' = truncate at ambiguous (N) base calls
+-  '-q 20' = min average quality score of 20
+-  '-t sanger' = Phred+33 q-score scale
+-  '-n' = truncate at ambiguous (N) base calls
 
+Again, we do that for all our data sets::
 
+  cd ~/workdir/sickle
+  parallel "sickle se -f ../cutadapt/{}.trimmedfr.fastq -t sanger -q20 -o {}.clipped.fastq" ::: {058,068,074}
 
 Lenght Filtering
 ----------------
 
--   Remove reads which are to short (generally)
--   Remove reads out of fragment length (16S hypervariable region)
+Finally, we will filter out all reads which are to short (generally) or which out of the fragment length (16S hypervariable region). In order to determine the low and high boundry of this filtering step, we will use a small Perl script which generates a read length histrogram and calculates some basic statistics.
 
-FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
+Pls download that script first::
+
+  cd $CONDA_PREFIX/bin
+  wget https://github.com/jueneman/16S-workshop-denbi/edit/master/docs/qc/FastaStats.pl
+  chmod u+x FastaStats.pl
+
+Now we call it on our FastQ file::
+
+  FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
 BGA1\_1.trimmed.clipped.fastq.hist
 
 
@@ -182,7 +191,7 @@ BGA1\_1.fastq
 
 
 FastQC - Revisited 
-^^^^^^^^^^^^^^^^^^^^^=
+------------------
 
 -   … run batch mode on quality treated data
 -   … compare the raw with the hq data
