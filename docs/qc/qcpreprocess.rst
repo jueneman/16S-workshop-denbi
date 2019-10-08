@@ -19,25 +19,20 @@ Typical workflow:
 .. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/workflow.png
 
 For this exercise:
--   Only 16S data
--   Merge: FLASh
--   Clip primers: cutadapt
--   Trim quality: sickle
--   Filter length: ea-utils
+ - Only 16S data
+ - Merge: FLASh
+ - Clip primers: cutadapt
+ - Trim quality: sickle
+ - Filter length: ea-utils
 
 
 Quality Treatment – Merge Reads 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Part I: Data Pre-Processing
-
-Assembly of forward and reverse read pairs
-
--   If original DNA fragment short than 2x read length
-
-Ungapped alignment with *min overlap* region (favors Illumina)
-
-Quality scores at merged positions recalculated (abs difference)
+- Assembly of forward and reverse read pairs:
+   - If original DNA fragment short than 2x read length
+- Ungapped alignment with *min overlap* region (favors Illumina)
+- Quality scores at merged positions recalculated (abs difference)
 
 Quality Treatment – Merge Reads 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
