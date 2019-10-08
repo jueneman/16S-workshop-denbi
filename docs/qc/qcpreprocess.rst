@@ -208,6 +208,13 @@ We can now inspect how this basic quality treatment affected the raw read qialit
   cd ~/workdir/fastq
   fastqc -t 14 -o ~/workdir/fastqc/ ~/workdir/length/*.fastq
   
+  
+As the last step of this part, we gather all hereby processed files into a new directory, called `HQ`::
+
+  cd ~/workdir
+  mkdir HQ
+  cp length/*.fastq HQ/
+  
 Final Remarks 
 ^^^^^^^^^^^^^
 
