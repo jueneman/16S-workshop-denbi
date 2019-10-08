@@ -1,5 +1,5 @@
-Data Quality Assessment
-=======================
+Community Profiling with Qiime
+==============================
 
 In the following, we will use Qiime2 to process our data and generate OTU tables:
 
