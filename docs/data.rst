@@ -49,3 +49,12 @@ Have a short look, on what is contained within the data directory. It should loo
 If you want to disable system beep sounds::
 
   xset -b
+  
+Activate Conda Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In order to follow the hands-on session you need to activate a special conda environment where all tools and software has been installed and is available::
+
+  conda activate mgcourse
+  
+Note: You need to do this in every terminal!
