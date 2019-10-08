@@ -1,6 +1,3 @@
-Quality Control & Pre-processing
---------------------------------
-
 FASTQ Format 
 ^^^^^^^^^^^^^^^^
 
@@ -8,17 +5,12 @@ Let's first have a look on what a FASTQ file looks like and who its format is de
 
 .. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png
 
-  
-
-
-![](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
-
 Sequence Quality Scores 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sequence quality scores originated form the phred base caller used for Sanger sequencing:
 
-
+.. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/chromatogram.png
 
 -   Quality = log-transformed error probability
 
@@ -28,207 +20,8 @@ Sequence quality scores originated form the phred base caller used for Sanger se
 | -   20                            | -   1/100                         |
 | -   30                            | -   1/1000                        |
 | -   40                            | -   1/10000                       |
+| -   50                            | -   1/100000                       |
 +-----------------------------------+-----------------------------------+
-
--   Example:
-
- 
-
-1
-
-Open a new terminal (&lt;left windows key&gt;+&lt;t&gt;)
-
-Connect to your VM via ssh using the generated key
-
--   ssh -i cws.key <ubuntu@134.176.27.XYZ>
-
-ssh might ask for accepting host key on first connect
-
-You will end up with a command prompt within the VM:
-
-Hands on: access VM
-
- 
-
-1
-
--   Go to Project → Compute → Volumes
--   Click on “Create Volume”
-
-1.
-
-2.
-
-Hands on: volumes
-
- 
-
--   Choose a name for the volume, e.g. “css\_vol”
--   Select a suitable size (default of 1 GB should be OK now)
--   Click on “Create Volume”
-
-Hands on: volumes
-
- 
-
--   Volume was created and is available now
--   Extend menu for volume and select “Manage Attachments”
-
-Click on arrow to extend menu
-
-Hands on: volumes
-
- 
-
--   Select the instance we have created before
--   Click on “Attach Volume”
-
-1.
-
-2.
-
-Hands on: volumes
-
- 
-
--   Volume list now shows the volume as attached
--   No more fancy feedback in dashboard…
--   … but in the VM!
-
-Hands on: volumes
-
- 
-
-VM
-
-PUB
-
-PRIV
-
-Project
-
-Domain
-
-Floating IP
-
-Network
-
-Flavor
-
-Images
-
-SSH Keys
-
-PUB
-
-Volume
-
-Router
-
-Dashboard
-
-Internet
-
-Cloud
-
-User
-
--   VM disks are not persistent
--   Data on these disks is lost if VM is deleted
--   Volumes are persistent
--   Attachable to VMs
--   Use for persistent data or data transfer
--   Owned by project
-
-Hands on: volumes
-
- 
-
--   Switch back to the terminal running ssh (or restart it)
--   Invoke “*ls /dev/vd\”
--   New block device vdb appeared
--   Create a filesystem on it: “*sudo mkfs.ext4 /dev/vdb*”
--   “mount” it: “*sudo mount /dev/vdb /mnt*”
--   Validate with e.g. “*df*” command:
-
-Hands on: volumes
-
- 
-
-1
-
-Volume is now accessible as standard file system
-
-Can be detached and attached to other VMs
-
-Stays around until being deleted
-
-But:
-
--   Volumes only accessible within project
--   Choice of file system depends on operating system
--   Might require management of posix users/groups
--   Not a shared file system, attachable to one VM at a time
--   Durability / accessibility depends on site setup
-
-Hands on: volumes
-
-Prepare Working Directory 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd
-
-mkdir /mnt/workdir
-
-ln -s /mnt/workdir
-
-Create workdir
---------------
-
-cd \~/Data/
-
-cp -r raw\_data \~/workdir/
-
-
-
-Copy data
----------
-
--   Ensure everyone has equally structured FS
--   Keep results in volume (crash safe)
-
-FastQC 
-^^^^^^^^^=
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-Part I: Data Pre-Processing
-
-fastqc --help
-
-
-
-Run FastQC
-----------
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-FastQC 
-^^^^^^^^^=
-
--   FastQC graphical quality control tool
--   Accepts FASTQ, SAM, BAM
--   Results exportable
-
-Part I: Data Pre-Processing
-
-fastqc --help
 
 
 
