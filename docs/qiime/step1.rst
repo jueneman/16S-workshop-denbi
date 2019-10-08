@@ -13,7 +13,7 @@ Then we use the tools/import function to import our data sets as defined in the 
 
  cd ~/workdir/qiime
  qiime tools import \
- --type SampleData[JoinedSequencesWithQuality] \
+ --type SampleData[SequencesWithQuality] \
  --input-format SingleEndFastqManifestPhred33 \
  --input-path HQ/manifest.txt \
  --output-path bga_joined_demux
