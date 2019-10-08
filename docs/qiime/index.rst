@@ -7,3 +7,4 @@ In the following, we will use Qiime2 to process our data and generate OTU tables
    :maxdepth: 1
 
    step1
+   step2
