@@ -1,0 +1,1240 @@
+Introduction to 16s rDNA Community Profiling Preprocessing and
+Clustering
+
+de.NBI Metagenomics Workshop
+
+Bielefeld
+
+27.03.-29.03.2018
+
+What is QIIME good for? {#what-is-qiime-good-for style="page-break-before:always; "}
+=======================
+
+Software Package for analyzing NGS data
+
+-   SSU rRNA gene analysis (16S/18S)
+-   Fungal ITS
+-   Shotgun sequences in general
+
+What is QIIME good for? {#what-is-qiime-good-for-1 style="page-break-before:always; "}
+=======================
+
+Out-of-the-box supported sequences by Technology
+
+-   Illumina
+-   454, PacBio, IonTorrent
+-   Multiple FASTA formats in general
+
+Behind the scenes {#behind-the-scenes style="page-break-before:always; "}
+=================
+
+Workflow scripts written in Python
+
+Runs ready packed:
+
+-   OS X
+-   Linux
+-   Amazon Cloud as EC2 AMI
+-   Virtual Box Container (e.g. MS Windows)
+
+Included binaries and reference files are ready built
+
+What is QIIME good for? {#what-is-qiime-good-for-2 style="page-break-before:always; "}
+=======================
+
+What is QIIME good for? {#what-is-qiime-good-for-3 style="page-break-before:always; "}
+=======================
+
+qiime2 {#qiime2 style="page-break-before:always; "}
+======
+
+-   **New and improved microbiome bioinformatics methods**.
+-   **Interactive visualizations** allows for in-depth
+    exploration/reporting of data.
+-   **Decentralized provenance tracking** provides automated
+    bioinformatics methods bookkeeping.
+-   **Multiple user interfaces**. The same bioinformatics functionality
+    is accessible through command line, graphical, and application
+    programmer interfaces.
+-   **Plugin architecture** allows anyone to add methods and
+    visualizations, removing us as a bottleneck between developers and
+    users.
+
+ {#section-1 style="page-break-before:always; "}
+
+**OTU Table**
+
+****
+
+****
+
+(i.e. per sample OTU counts)
+
+**Phylogenetic Tree**
+
+Evolutionary relationship between OTUs
+
+Pre-Processing
+
+e.g. remove primer(s), demultiplex, quality filter
+
+Denoise 454 Data
+
+PyroNoise, Denoiser
+
+**Sequencing output**
+
+(Illumina, 454, Sanger)
+
+FASTA, QUAL, sff/trace files
+
+**Metadata**
+
+Mapping file
+
+SRA Submission
+
+Submit sequences and metadata to SRA
+
+Pick OTUs and representative sequences
+
+**Reference based**
+
+usearch, uclust, MOTHUR, blast
+
+**De novo**
+
+****
+
+Usearch, uclust, CD-HIT, MOTHUR
+
+**Open reference**
+
+****
+
+Combination of reference based and De novo approach
+
+Build OTU table
+
+i.e., per sample OTU counts
+
+Build phylogenetic tree
+
+e.g., FastTree, RAxML, ClearCut
+
+Align sequences
+
+e.g., PyNAST, infernal, MUSCLE, MAFFT
+
+Assign taxonomy
+
+Blast, RDP Classifier, uclust consensus-based
+
+α-diversity and rarefraction
+
+e.g., Simpson, chao1, observed species, Shannon
+
+β-diversity and rarefraction
+
+e.g., weighted und unweighted UniFrac, Bray-Curtis, Jaccard
+
+Visualization
+
+e.g., 2D and 3D PCoA plots, distance histograms, taxonomy pie charts/bar
+charts/are charts, rarefaction plots, OTU network visualization,
+jackknified hierarchical clustering
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+How to start? Load QIIME into Path {#how-to-start-load-qiime-into-path style="page-break-before:always; "}
+==================================
+
+Login into VM and activate qiime2 environment: &gt; ssh -i
+YOUR\_PRIVATE\_KEY ubuntu@YOU\_VM\_IP
+
+&gt; conda activate mgcourse
+
+&gt; source tab-qiime
+
+This enables all qiime commands and all depended libs and sources
+
+This allows for a more user friendly tab completion
+
+QIIME 2 provides different types of interface(s), optimized for: {#qiime-2-provides-different-types-of-interfaces-optimized-for style="page-break-before:always; "}
+================================================================
+
+-   Users new to microbiome bioinformatics who want a GUI.
+-   Power users, who want a command line interface.
+-   Data Scientists, who work in Jupyter notebooks or Python terminals,
+    and want an API.
+-   Collaborators who don’t have QIIME installed.
+
+QIIME 2 Interfaces - CLI {#qiime-2-interfaces---cli style="page-break-before:always; "}
+========================
+
+[q2cli](https://docs.qiime2.org/2017.7/interfaces/q2cli/)
+
+QIIME 2 Interfaces - Studio {#qiime-2-interfaces---studio style="page-break-before:always; "}
+===========================
+
+[QIIME 2 Studio](https://docs.qiime2.org/2017.7/interfaces/q2studio/)
+
+**q2view: a read-only web interface for viewing results without having QIIME 2 installed** {#q2view-a-read-only-web-interface-for-viewing-results-without-having-qiime-2-installed style="page-break-before:always; "}
+==========================================================================================
+
+-   Reads QIIME 2 outputs (QZAs and QZVs)
+-   Browser-based software (via [Service
+    Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)!)
+-   Static site (no application server)
+-   No uploading!
+-   Easily share visualizations with collaborators
+
+Required files for further qiime analysis {#required-files-for-further-qiime-analysis style="page-break-before:always; "}
+=========================================
+
+-   High quality sequencing reads (from previous session)
+-   Manifest file pointing to sequence files: *manifest.txt*
+-   Mapping containing metadata: *mapping.txt*
+-   File with all commands to run in this session: **
+
+ {#section-2 style="page-break-before:always; "}
+
+**OTU Table**
+
+****
+
+****
+
+(i.e. per sample OTU counts)
+
+**Phylogenetic Tree**
+
+Evolutionary relationship between OTUs
+
+Pre-Processing
+
+e.g. remove primer(s), demultiplex, q-filter, CC
+
+Denoise 454 Data
+
+PyroNoise, Denoiser
+
+**Sequencing output**
+
+(Illumina, 454, Sanger)
+
+FASTA, QUAL, sff/trace files
+
+**Metadata**
+
+Mapping file
+
+SRA Submission
+
+Submit sequences and metadata to SRA
+
+Pick OTUs and representative sequences
+
+**Reference based**
+
+usearch, uclust, MOTHUR, blast
+
+**De novo**
+
+****
+
+Usearch, uclust, CD-HIT, MOTHUR
+
+**Open reference**
+
+****
+
+Combination of reference based and De novo approach
+
+Build OTU table
+
+i.e., per sample OTU counts
+
+Build phylogenetic tree
+
+e.g., FastTree, RAxML, ClearCut
+
+Align sequences
+
+e.g., PyNAST, infernal, MUSCLE, MAFFT
+
+Assign taxonomy
+
+Blast, RDP Classifier, uclust consensus-based
+
+α-diversity and rarefraction
+
+e.g., Simpson, chao1, observed species, Shannon
+
+β-diversity and rarefraction
+
+e.g., weighted und unweighted UniFrac, Bray-Curtis, Jaccard
+
+Visualization
+
+e.g., 2D and 3D PCoA plots, distance histograms, taxonomy pie charts/bar
+charts/are charts, rarefaction plots, OTU network visualization,
+jackknified hierarchical clustering
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+Where to go with the metadata? {#where-to-go-with-the-metadata style="page-break-before:always; "}
+==============================
+
+-   Metadata is additional data (information) about your data: Data →
+    Sequencing reads Metadata → Information about your samples
+-   Implemented in QIIME via CSV-like mapping files → several single
+    files per sample or one for the whole project/ sample set
+-   Contained in the provided mapping files per sample
+
+[Minimum information about a marker gene sequence (MIMARKS) and minimum information about any (x) sequence (MIxS) specifications.](http://www.nature.com/nbt/journal/v29/n5/full/nbt.1823.html) {#minimum-information-about-a-marker-gene-sequence-mimarks-and-minimum-information-about-any-x-sequence-mixs-specifications. style="page-break-before:always; "}
+===============================================================================================================================================================================================
+
+Yilmaz et al. Nature Biotechnology 29, 415–420 (2011).
+
+Where to go with the metadata? The mapping file {#where-to-go-with-the-metadata-the-mapping-file style="page-break-before:always; "}
+===============================================
+
+Mapping file is used for further analysis of your samples.
+
+-   Minimum header: SampleID, BarcodeSequence, LinkerPrimerSequence,
+    Description
+-   Additional fields are written after the LinkerPrimerSequence field.
+
+Hot wo generate your own mapping files {#hot-wo-generate-your-own-mapping-files style="page-break-before:always; "}
+======================================
+
+You can generate your own mapping file for your sample set and check
+validity with validate\_mapping\_file.py .
+
+-   Fields are tab-separated
+-   Minimum header: SampleID, BarcodeSequence, LinkerPrimerSequence,
+    Description
+-   SampleID: Only alphanumeric characters and ‘.‘
+-   Other fields: alphanumeric characters and ‘\_.-+% ,:;/‘
+-   Empty fields: Use NA
+
+ {#section-3 style="page-break-before:always; "}
+
+**OTU Table**
+
+****
+
+****
+
+(i.e. per sample OTU counts)
+
+**Phylogenetic Tree**
+
+Evolutionary relationship between OTUs
+
+Pre-Processing
+
+e.g. remove primer(s), demultiplex, q-filter, CC
+
+Denoise 454 Data
+
+PyroNoise, Denoiser
+
+**Sequencing output**
+
+(Illumina, 454, Sanger)
+
+FASTA, QUAL, sff/trace files
+
+**Metadata**
+
+Mapping file
+
+SRA Submission
+
+Submit sequences and metadata to SRA
+
+Pick OTUs and representative sequences
+
+**Reference based**
+
+usearch, uclust, MOTHUR, blast
+
+**De novo**
+
+****
+
+Usearch, uclust, CD-HIT, MOTHUR
+
+**Open reference**
+
+****
+
+Combination of reference based and De novo approach
+
+Build OTU table
+
+i.e., per sample OTU counts
+
+Build phylogenetic tree
+
+e.g., FastTree, RAxML, ClearCut
+
+Align sequences
+
+e.g., PyNAST, infernal, MUSCLE, MAFFT
+
+Assign taxonomy
+
+Blast, RDP Classifier, uclust consensus-based
+
+α-diversity and rarefraction
+
+e.g., Simpson, chao1, observed species, Shannon
+
+β-diversity and rarefraction
+
+e.g., weighted und unweighted UniFrac, Bray-Curtis, Jaccard
+
+Visualization
+
+e.g., 2D and 3D PCoA plots, distance histograms, taxonomy pie charts/bar
+charts/are charts, rarefaction plots, OTU network visualization,
+jackknified hierarchical clustering
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+Pre-Processing {#pre-processing style="page-break-before:always; "}
+==============
+
+In order to use (our) data in QIIME, some pre-processing needs to be
+done: 1. Barcode extraction (in some case)
+
+2\. Quality control
+
+3\. Relabeling of sequencing reads
+
+4\. Merging of reads into a single FASTA file
+
+Import your quality treated data {#import-your-quality-treated-data style="page-break-before:always; "}
+================================
+
+**&gt; qiime tools import \\**
+
+**--type SampleData\[JoinedSequencesWithQuality\] \\**
+
+**--source-format SingleEndFastqManifestPhred33 \\**
+
+**--input-path HQ/manifest.txt \\**
+
+**--output-path bga\_joined\_demux**
+
+**&gt; cd \~/workdir**
+
+**&gt; cp \~/16Sdata/HQ/manifest.txt HQ/**
+
+**&gt; cp \~/16Sdata/combined\_mapping.txt .**
+
+&gt;qiime demux summarize \\
+
+--i-data bga\_joined\_demux.qza \\
+
+--o-visualization bga\_joined\_demux.qzv
+
+&gt;cp bga\_joined\_demux.qzv \~/www
+
+Inspect results:
+
+Split your libraries {#split-your-libraries style="page-break-before:always; "}
+====================
+
+**&gt; cd \~/workdir**
+
+**&gt; cp -r \~/DATA/HQ/ .**
+
+**&gt; cp \~/DATA/combined\_mapping.txt .**
+
+Import your quality treated data {#import-your-quality-treated-data-1 style="page-break-before:always; "}
+================================
+
+**&gt; qiime tools import \\**
+
+**--type SampleData\[JoinedSequencesWithQuality\] \\**
+
+**--source-format SingleEndFastqManifestPhred33 \\**
+
+**--input-path HQ/manifest.txt \\**
+
+**--output-path bga\_joined\_demux**
+
+&gt;qiime demux summarize \\
+
+--i-data bga\_joined\_demux.qza \\
+
+--o-visualization bga\_joined\_demux.qzv
+
+&gt;cp bga\_joined\_demux.qzv \~/www
+
+Inspect results:
+
+**&gt; cd \~/workdir**
+
+**&gt; cp -r \~/DATA/HQ/ .**
+
+**&gt; cp \~/DATA/combined\_mapping.txt .**
+
+How did QIIME 2 know what happened? {#how-did-qiime-2-know-what-happened style="page-break-before:always; "}
+===================================
+
+*qza and qzv files are just structured zip files*
+
+-   Data, in the usual formats (e.g., newick, fasta, tsv, ...), is in
+    the data/ directory.
+-   The rest is human-readable QIIME-specific metadata.
+
+Errors in PCR {#errors-in-pcr style="page-break-before:always; "}
+=============
+
+Distinction between artefacts (chimeras, contamination, primer dimer, …)
+and bias (reagents, barcode, primers, ...)
+
+Correlation with
+
+-   PCR cycles
+-   Annealing temperature
+-   Elongation time
+
+PCR conditions are crucial
+
+Hinders post-processing, reduces comparability
+
+No standardized error handling pipeline
+
+Chimeric Formations {#chimeric-formations style="page-break-before:always; "}
+===================
+
+**Two possaible reasons:**
+
+-   **By incomplete extension**
+-   **By template switching**
+
+**Positive correlation with PCR cycles (saturation)**
+
+**Negative correlation with sample diversity**
+
+**Typically chimeras amounts to a lesser fraction**
+
+Chimeric Formations {#chimeric-formations-1 style="page-break-before:always; "}
+===================
+
+**Incomplete Extension Type A**
+
+**Incomplete Extension Type B**
+
+Chimeric Formations {#chimeric-formations-2 style="page-break-before:always; "}
+===================
+
+**Template Switch Type A**
+
+**Template Switch Type B**
+
+Chimera Detection {#chimera-detection style="page-break-before:always; "}
+=================
+
+**Before NGS**
+
+-   **manually curated + semi automated methods**
+-   **Data base screening**
+-   **Requiring almost full length + slow**
+
+**After NGS**
+
+**High throughput + short reads**
+
+**de novo (intrinsic) and reference based (extrinsic)**
+
+**Most widely used tool: usearch (formerly uchime)**
+
+-   → utilized in qiime (and mothur, and ...)
+
+Chimera Detection with UCHIME {#chimera-detection-with-uchime style="page-break-before:always; "}
+=============================
+
+Edgar et al. 2011, Bioinformatics
+
+Bottom up approach
+
+-   Sequences are split
+-   chunks are separately compared against non-chimeric sequences
+-   Best hits = candidate parents
+-   Two best candidates by all chunks are identified
+-   Chimeric if matches against different parent
+-   Three-way multiple alignment
+-   Chimera reported if combined segment of AB has higher identity to
+    query than either A or B
+
+Any ref DB suitable which is chimera free (e.g. Greengenes, Silva gold)
+
+De novo mode starts with empty reference database
+
+Filter Potential Chimeric Sequences I {#filter-potential-chimeric-sequences-i style="page-break-before:always; "}
+=====================================
+
+**&gt;qiime vsearch dereplicate-sequences \\**
+
+**--i-sequences bga\_joined\_demux.qza \\**
+
+**--o-dereplicated-table bga\_joined\_demux\_derep\_table.qza
+--o-dereplicated-sequences bga\_joined\_demux\_derep.qza**
+
+****
+
+****
+
+**&gt;qiime vsearch uchime-denovo \\**
+
+**--i-sequences bga\_joined\_demux\_derep.qza \\**
+
+**--i-table bga\_joined\_demux\_derep\_table.qza \\**
+
+**--output-dir vsearch-cc-out \\**
+
+**--verbose**
+
+&gt;qiime metadata tabulate \\
+
+-m-input-file vsearch-cc-out/stats.qza \\
+
+--o-visualization vsearch-cc-out/stats.qzv
+
+&gt;cp vsearch-cc-out/stats.qzv \~/www
+
+Inspect results:
+
+Filter Potential Chimeric Sequences II {#filter-potential-chimeric-sequences-ii style="page-break-before:always; "}
+======================================
+
+**&gt;qiime feature-table filter-features \\**
+
+**--i-table bga\_joined\_demux\_derep\_table.qza \\**
+
+**--m-metadata-file vsearch-cc-out/nonchimeras.qza \\**
+
+**--o-filtered-table bga\_joined\_demux\_derep\_nonch\_table.qza**
+
+****
+
+**&gt;qiime feature-table filter-seqs \\**
+
+**--i-data bga\_joined\_demux\_derep.qza \\**
+
+**--m-metadata-file vsearch-cc-out/nonchimeras.qza \\**
+
+**--o-filtered-data bga\_joined\_demux\_derep\_nonch.qza**
+
+&gt;qiime feature-table summarize \\
+
+--i-table bga\_joined\_demux\_derep\_nonch\_table.qza \\
+
+--m-sample-metadata-file combined\_mapping.txt \\
+
+--o-visualization bga\_joined\_demux\_derep\_nonch\_table.qzv
+
+&gt;cp bga\_joined\_demux\_derep\_nonch\_table.qzv \~/www
+
+Inspect results:
+
+ {#section-4 style="page-break-before:always; "}
+
+**OTU Table**
+
+****
+
+****
+
+(i.e. per sample OTU counts)
+
+**Phylogenetic Tree**
+
+Evolutionary relationship between OTUs
+
+Pre-Processing
+
+e.g. remove primer(s), demultiplex, q-filter, CC
+
+Denoise 454 Data
+
+PyroNoise, Denoiser
+
+**Sequencing output**
+
+(Illumina, 454, Sanger)
+
+FASTA, QUAL, sff/trace files
+
+**Metadata**
+
+Mapping file
+
+SRA Submission
+
+Submit sequences and metadata to SRA
+
+Pick OTUs and representative sequences
+
+**Reference based**
+
+usearch, uclust, MOTHUR, blast
+
+**De novo**
+
+****
+
+Usearch, uclust, CD-HIT, MOTHUR
+
+**Open reference**
+
+****
+
+Combination of reference based and De novo approach
+
+Build OTU table
+
+i.e., per sample OTU counts
+
+Build phylogenetic tree
+
+e.g., FastTree, RAxML, ClearCut
+
+Align sequences
+
+e.g., PyNAST, infernal, MUSCLE, MAFFT
+
+Assign taxonomy
+
+Blast, RDP Classifier, uclust consensus-based
+
+α-diversity and rarefraction
+
+e.g., Simpson, chao1, observed species, Shannon
+
+β-diversity and rarefraction
+
+e.g., weighted und unweighted UniFrac, Bray-Curtis, Jaccard
+
+Visualization
+
+e.g., 2D and 3D PCoA plots, distance histograms, taxonomy pie charts/bar
+charts/are charts, rarefaction plots, OTU network visualization,
+jackknified hierarchical clustering
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+OTUs – Operational Taxonomic Unit {#otus-operational-taxonomic-unit style="page-break-before:always; "}
+=================================
+
+Operational Taxonomic Unit (OTU): "the thing(s) being studied“ In
+traditional numerical taxonomy (Sokal and Sneath, 1963; Sneath and
+Sokal, 1973)
+
+A “Thing“:
+
+-   one individual organism
+-   named taxonomic group (species or genus)
+-   group with undetermined evolutionary relationships sharing a given
+    set of observed characteristics
+
+OTUs – Operational Taxonomic Unit {#otus-operational-taxonomic-unit-1 style="page-break-before:always; "}
+=================================
+
+Operational Taxonomic Unit (OTU): "the thing(s) being studied“ In
+traditional numerical taxonomy (Sokal and Sneath, 1963; Sneath and
+Sokal, 1973)
+
+A “Thing“:
+
+-   one individual organism
+-   named taxonomic group (species or genus)
+-   group with undetermined evolutionary relationships sharing a given
+    set of observed characteristics
+
+OTUs – Operational Taxonomic Unit {#otus-operational-taxonomic-unit-2 style="page-break-before:always; "}
+=================================
+
+**Operational taxonomic units are more generally referred to as
+features.**
+
+OTUs – Operational Taxonomic Unit {#otus-operational-taxonomic-unit-3 style="page-break-before:always; "}
+=================================
+
+OTUs – Operational Taxonomic Unit {#otus-operational-taxonomic-unit-4 style="page-break-before:always; "}
+=================================
+
+Clustering
+
+-   Remove noisy sequences and reduce the amount of sequences to process
+-   Works based on a given threshold, i.e. 97% similarity but other
+    exist like Oligotyping
+-   There are different methods (closed or open reference) and
+    algorithms (sortmerna, vclust)
+
+Remove noise
+
+-   Find the cleanest sequence
+-   Correct and/or discard super noisy sequences
+-   Examples are: DADA2 and Deblur
+
+OTUs – Operational Taxonomic Unit {#otus-operational-taxonomic-unit-5 style="page-break-before:always; "}
+=================================
+
+Open reference based OTU clustering Prepare Reference OTUs {#open-reference-based-otu-clustering-prepare-reference-otus style="page-break-before:always; "}
+==========================================================
+
+For referenced based clustering, reference OTUs must be provided.
+
+→ taken from: <https://www.arb-silva.de/download/archive/qiime/>
+
+→ look for more: http://qiime.org/home\_static/dataFiles.html
+
+**&gt; cd \~/workdir**
+
+**&gt; cp \~/DATA/database/silva\_128/97/97\_otus\_16S.fasta .**
+
+**&gt; cp
+\~/DATA/database/silva\_128/97/consensus\_taxonomy\_all\_levels.txt .**
+
+****
+
+****
+
+**&gt; qiime tools import --type FeatureData\[Sequence\] \\**
+
+**--input-path 97\_otus\_16S.fasta \\**
+
+**--output-path 97\_otus\_16S.qza**
+
+****
+
+****
+
+**&gt; qiime tools import --type FeatureData\[Taxonomy\] \\**
+
+**--source-format HeaderlessTSVTaxonomyFormat \\**
+
+**--input-path consensus\_taxonomy\_all\_levels.txt \\**
+
+**--output-path consensus\_taxonomy\_all\_levels.qza**
+
+****
+
+****
+
+****
+
+Open reference based OTU clustering {#open-reference-based-otu-clustering style="page-break-before:always; "}
+===================================
+
+Cluster and post-process your quality controlled and merged input
+sequences using **vsearch**
+
+**qiime vsearch cluster-features-open-reference \\**
+
+**--i-table bga\_joined\_demux\_derep\_nonch\_table.qza \\**
+
+**--i-sequences bga\_joined\_demux\_derep\_nonch.qza \\**
+
+**--o-clustered-table bga\_oref\_table.qza \\**
+
+**--o-clustered-sequences bga\_oref\_seqs.qza \\**
+
+**--o-new-reference-sequences bga\_oref\_newref\_seqs.qza \\**
+
+**--output-dir openref \\**
+
+**--p-perc-identity 0.97 \\**
+
+**--p-threads 14 \\**
+
+**--i-reference-sequences 97\_otus\_16S.qza \\**
+
+**--verbose**
+
+****
+
+****
+
+****
+
+This will take some time (even hours for very large data sets)!
+
+Compute your OTUs! {#compute-your-otus style="page-break-before:always; "}
+==================
+
+Final step: Cluster your sequences into OTUs (operational taxonomical
+units) for final analysis, such as:
+
+-   Taxonomic Profiling
+-   Heat maps based on metadata
+-   Alpha diversity
+-   Beta diversity
+-   Rarefaction analysis
+-   ...
+
+OTU clustering {#otu-clustering style="page-break-before:always; "}
+==============
+
+OTU are clusters of sequences identified by sequence similarity:
+
+resulting resolution defines taxonomic level
+
+-   99% strain (uncommon, uncertain)
+-   97% species (desired)
+-   95% genus
+
+OTU picking strategies within qiime {#otu-picking-strategies-within-qiime style="page-break-before:always; "}
+===================================
+
+*de novo*
+
+-   Applicable, if no reference set is given
+-   All reads are preserved
+-   Reads are clustered within themselves
+-   Can be slow & prone to chimeras
+-   Problematic for non-overlapping VRs & huge data
+
+ <http://qiime.org/tutorials/otu_picking.html>
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+OTU picking strategies within qiime {#otu-picking-strategies-within-qiime-1 style="page-break-before:always; "}
+===================================
+
+closed reference
+
+-   Reference set is needed
+-   Only known sequences considered
+-   Fast
+-   Reference (pre-filtered, chim free, assigned taxa):
+    Greengenes(13\_8)
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+ <http://qiime.org/tutorials/otu_picking.html>
+
+OTU picking strategies within qiime {#otu-picking-strategies-within-qiime-2 style="page-break-before:always; "}
+===================================
+
+open reference
+
+Combination of both
+
+Good for high amount of data (can be slow)
+
+Pre-filter
+
+-   Low identity threshold (&gt;60%) against reference dataset → failing
+    reads are discarded
+
+Four step clustering
+
+-   Closed ref OTU picking → failing reads used in step2
+-   Subsample failed reads, de novo clustering, pick representatives →
+    new refset2
+-   Closed ref OTU picking against refset2 → failing reads used in step4
+-   De novo clustering of failed reads
+
+ <http://qiime.org/tutorials/otu_picking.html>
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+OTU picking strategies within qiime {#otu-picking-strategies-within-qiime-3 style="page-break-before:always; "}
+===================================
+
+open reference
+
+Post-OTU processing
+
+-   Merge OTU maps from previous steps into one table
+-   Filter singletons → only OTUs with size &gt;2 are considered
+    (threshold adjustable)
+-   Pick one representatives per OTU & assign taxonomy
+-   Align representatives with PyNast → construct a phylogenetic tree
+-   Filter OTUs from OTU table that failed alignment
+
+ <http://qiime.org/tutorials/otu_picking.html>
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+Greedy (online) clustering with UCLUST {#greedy-online-clustering-with-uclust style="page-break-before:always; "}
+======================================
+
+Agglomerative hierarchical clustering
+
+-   Complete linkage prone to over compact clusters
+-   Single linkage prone to chaining
+-   Average linkage inexact cluster distance
+
+Seldom used for OTU clustering (requires NxN similarity matrix, thus
+computational expensive)
+
+http://www.drive5.com/usearch/manual/linkage.html
+
+Greedy (online) clustering with UCLUST {#greedy-online-clustering-with-uclust-1 style="page-break-before:always; "}
+======================================
+
+Sequences are processed on by one
+
+-   First seq = first centroid
+-   If next seq matches any centroid
+-   → assigned to this cluster
+-   Otherwise forms new centroid
+
+http://www.drive5.com/usearch/manual/uclust\_algo.htm
+
+-   Order of processing important
+-   Seqs are presorted based on de-replication counts or pre-clustering
+    (99%)
+-   Only works for sufficiently shared similarity
+
+ {#section-5 style="page-break-before:always; "}
+
+**OTU Table**
+
+****
+
+****
+
+(i.e. per sample OTU counts)
+
+**Phylogenetic Tree**
+
+Evolutionary relationship between OTUs
+
+Pre-Processing
+
+e.g. remove primer(s), demultiplex, q-filter, CC
+
+Denoise 454 Data
+
+PyroNoise, Denoiser
+
+**Sequencing output**
+
+(Illumina, 454, Sanger)
+
+FASTA, QUAL, sff/trace files
+
+**Metadata**
+
+Mapping file
+
+SRA Submission
+
+Submit sequences and metadata to SRA
+
+Pick OTUs and representative sequences
+
+**Reference based**
+
+usearch, uclust, MOTHUR, blast
+
+**De novo**
+
+****
+
+Usearch, uclust, CD-HIT, MOTHUR
+
+**Open reference**
+
+****
+
+Combination of reference based and De novo approach
+
+Build OTU table
+
+i.e., per sample OTU counts
+
+Build phylogenetic tree
+
+e.g., FastTree, RAxML, ClearCut
+
+Align sequences
+
+e.g., PyNAST, infernal, MUSCLE, MAFFT
+
+Assign taxonomy
+
+Blast, RDP Classifier, uclust consensus-based
+
+α-diversity and rarefraction
+
+e.g., Simpson, chao1, observed species, Shannon
+
+β-diversity and rarefraction
+
+e.g., weighted und unweighted UniFrac, Bray-Curtis, Jaccard
+
+Visualization
+
+e.g., 2D and 3D PCoA plots, distance histograms, taxonomy pie charts/bar
+charts/are charts, rarefaction plots, OTU network visualization,
+jackknified hierarchical clustering
+
+Navas-Molina et al. 2013, Meth. Enzymol.
+
+Amplicon Sequence Variants (ASV) – zero OTUs (zOTUs) – Sequence Variants (SVs) {#amplicon-sequence-variants-asv-zero-otus-zotus-sequence-variants-svs style="page-break-before:always; "}
+==============================================================================
+
+https://www.nature.com/articles/nmeth.3869
+
+Amplicon Sequence Variants (ASV) – zero OTUs (zOTUs) – Sequence Variants (SVs) {#amplicon-sequence-variants-asv-zero-otus-zotus-sequence-variants-svs-1 style="page-break-before:always; "}
+==============================================================================
+
+https://www.nature.com/articles/nmeth.3869
+
+https://www.nature.com/articles/ismej2017119
+
+Amplicon Sequence Variants (ASV) – zero OTUs (zOTUs) – Sequence Variants (SVs) {#amplicon-sequence-variants-asv-zero-otus-zotus-sequence-variants-svs-2 style="page-break-before:always; "}
+==============================================================================
+
+https://www.nature.com/articles/nmeth.3869
+
+https://www.nature.com/articles/ismej2017119
+
+https://www.biorxiv.org/content/early/2016/10/15/081257
+
+DADA2 {#dada2 style="page-break-before:always; "}
+=====
+
+R package to infers exact amplicon sequence variants (ASVs)
+
+replacing the coarser OTU clustering approach
+
+input demultiplexed FASTQ
+
+output SVs + sample-wise abundances
+
+-   Filter and trim data
+-   Error correction after deducing parametric error model
+-   Dereplication
+-   Merge pairs
+-   Chimera filtering
+
+Taxonomic classification via RDP naive Bayesian classifier
+
+-   genus-species assignment by exact matching
+
+→ https://benjjneb.github.io/dada2/tutorial.html
+
+Generate ASVs with DaDa2 {#generate-asvs-with-dada2 style="page-break-before:always; "}
+========================
+
+**qiime tools import \\**
+
+**--type SampleData\[PairedEndSequencesWithQuality\] \\**
+
+**--source-format PairedEndFastqManifestPhred33 \\**
+
+**--input-path raw\_data/manifest.txt \\**
+
+**--output-path bga\_demux.qza**
+
+****
+
+****
+
+**qiime dada2 denoise-paired \\**
+
+**--i-demultiplexed-seqs bga\_demux.qza \\**
+
+**--o-table bga\_dada2\_table.qza \\**
+
+**--o-representative-sequences bag\_dada2\_seqs.qza \\**
+
+**--p-trim-left-f 16 \\**
+
+**--p-trim-left-r 21 \\**
+
+**--p-trunc-len-f 250 \\**
+
+**--p-trunc-len-r 250 \\**
+
+**--p-n-threads 14 \\**
+
+**--p-n-reads-learn 200000 \\**
+
+**--verbose**
+
+****
+
+****
+
+****
+
+****
+
+Taxonomic Classification {#taxonomic-classification style="page-break-before:always; "}
+========================
+
+****
+
+**wget
+https://data.qiime2.org/2018.2/common/gg-13-8-99-515-806-nb-classifier.qza**
+
+****
+
+**qiime feature-classifier classify-sklearn \\**
+
+**--i-classifier gg-13-8-99-515-806-nb-classifier.qza \\**
+
+**--i-reads bga\_oref\_seqs.qza \\**
+
+**--o-classification bga\_oref\_taxonomy.qza**
+
+****
+
+**qiime feature-classifier classify-sklearn \\**
+
+**--i-classifier gg-13-8-99-515-806-nb-classifier.qza \\**
+
+**--i-reads bga\_dada2\_seqs.qza \\**
+
+**--o-classification bga\_dada2\_taxonomy.qza**
+
+****
+
+****
+
+****
+
+****
+
+****
+
+Resources {#resources style="page-break-before:always; "}
+=========
+
+[**http://qiime.org/tutorials/tutorial.html**](http://qiime.org/tutorials/tutorial.html)
+----------------------------------------------------------------------------------------
+
+****
+----
+
+****
+----
+
+**… now better use:**
+---------------------
+
+****
+----
+
+[**https://docs.qiime2.org/**](https://docs.qiime2.org/)
+--------------------------------------------------------
+
+****
+----
+
+****
+----
