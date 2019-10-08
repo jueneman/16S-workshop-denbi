@@ -104,7 +104,7 @@ Evaluate with fastqc::
   mkdir -p ~/workdir/fastqc/  
   fastqc -t 14 -o ~/workdir/fastqc/ ~/workdir/16Sdata/*.fastq
   
-After that, you can load the reports in your web browser. Open a file browser, go to your workdir/fastqc/ directory and double click the html file, e.g.:
+After that, you can load the reports in your web browser. Open a file browser, go to your workdir/fastqc/ directory and double click the html file, e.g.::
 
   cd ~/workdir/fastqc
   firefox *.html
