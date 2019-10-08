@@ -16,7 +16,7 @@ Create a link in your home directory to the mounted volume::
 
 The tutorial dataset is located in our object store. We have also prepared some precomputed results.You can get both here::
 
-cd ~/workdir
+  cd ~/workdir
   wget https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/mgcourse_data/16Sdata.tgz
   
 Then, unpack the tar archive::
@@ -31,12 +31,20 @@ and remove the tar archives::
   
 Have a short look, on what is contained within the data directory. It should look like this::
 
-  ls -l ~/workdir/data/
-  -rw-r--r-- 1 ubuntu ubuntu 4372654 Aug 30 08:24 Reference.fna
-  drwxr-xr-x 2 ubuntu ubuntu   24576 Aug 30 08:24 fast5
-  drwxrwxr-x 2 ubuntu ubuntu    4096 Sep  5 07:23 fast5_small
-  drwxrwxr-x 2 ubuntu ubuntu    4096 Sep 12 08:01 fast5_tiny
-  drwxr-xr-x 2 ubuntu ubuntu    4096 Aug 30 08:36 illumina
+  ubuntu@sebmain-939e0:~/workdir/16Sdata$ ls -al ~/workdir/16Sdata
+  total 203412
+  drwx------ 2 ubuntu ubuntu     4096 Oct  7 15:03 .
+  drwxr-xr-x 4 ubuntu ubuntu     4096 Oct  8 04:52 ..
+  -rw------- 1 ubuntu ubuntu 37091989 Oct  7 14:56 057_R1.fastq
+  -rw------- 1 ubuntu ubuntu 37091989 Oct  7 14:56 057_R2.fastq
+  -rw------- 1 ubuntu ubuntu 27836957 Oct  7 14:56 058_R1.fastq
+  -rw------- 1 ubuntu ubuntu 27836957 Oct  7 14:56 058_R2.fastq
+  -rw------- 1 ubuntu ubuntu 19458566 Oct  7 14:54 068_R1.fastq
+  -rw------- 1 ubuntu ubuntu 19458566 Oct  7 14:54 068_R2.fastq
+  -rw------- 1 ubuntu ubuntu 19746613 Oct  7 14:53 074_R1.fastq
+  -rw------- 1 ubuntu ubuntu 19746613 Oct  7 14:53 074_R2.fastq
+  -rw------- 1 ubuntu ubuntu       67 Oct  7 14:57 primers.txt
+  ubuntu@sebmain-939e0:~/workdir/16Sdata$ 
 
 If you want to disable system beep sounds::
 
