@@ -40,23 +40,23 @@ Let's try to merge the first pair of reads::
 
   mkdir -p ~/workdir/flash
   cd ~/workdir/flash
-  flash -r 300 ~/workdir/16Sdata/057_R1.fastq ~/workdir/16Sdata/057_R2.fastq -o 057
+  flash -r 300 ~/workdir/16Sdata/BGA1_1_R1.fastq ~/workdir/16Sdata/BGA1_1_R2.fastq -o BGA1_1
   
 You will get a report on how good that worked out::
 
   [FLASH] Read combination statistics:
-  [FLASH]     Total pairs:      41836
-  [FLASH]     Combined pairs:   37934
-  [FLASH]     Uncombined pairs: 3902
-  [FLASH]     Percent combined: 90.67%
+  [FLASH]     Total pairs:      8495
+  [FLASH]     Combined pairs:   8388
+  [FLASH]     Uncombined pairs: 107
+  [FLASH]     Percent combined: 98.74%
 
 The merged PE reads have now been written to the following file::
 
-  057.extendedFrags.fastq
+  BGA1_1.extendedFrags.fastq
 
 Let's do that for all other pairs::
 
-  parallel "flash -r 300 ~/workdir/16Sdata/{}_R1.fastq ~/workdir/16Sdata/{}_R2.fastq -o {}" ::: {058,068,074}
+  parallel "flash -r 300 ~/workdir/16Sdata/{}_R1.fastq ~/workdir/16Sdata/{}_R2.fastq -o {}" ::: {BGA1_2,BGA2_1,BGA2_2,BGA3_1,BGA3_2,BGA4_1,BGA4_2}
   
 If you have more information about the amplified fragment, you can adjust min/max overlap as necessary and also provide fragment length and SD if available.
 
@@ -67,17 +67,17 @@ Primer Clipping
 First we need to know which primer sequences weree used to asmplify our region of interest
 
 +---------------+--------+--------------------------+
-| Domain        | Primer | Sequence                 |
+| Domain        | Region | Sequence                 |
 +===============+========+==========================+
-| Bacteria  RRS | F939   | GAATTGACGGGGGCCCGCACAAG  |
-| Bacteria  RRS | R1378  | CGGTGTGTACAAGGCCCGGGAACG |
+| Bacteria      | V3F    | CTACGGGNGGCWGCAG         |
+| Bacteria      | V4R    | GACTACHVGGGTATCTAATCC    |
 +---------------+--------+--------------------------+
 
 We are going to use cutadapt to search for and remove any found primers sequences from the merged reads::
 
    mkdir ~/workdir/cutadapt
    cd ~/workdir/cutadapt
-   cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/057.extendedFrags.fastq -e 0.2 -O 10 -o 057.trimmedf.fastq
+   cutadapt -g ^CTACGGGNGGCWGCAG ../flash/BGA1_1.extendedFrags.fastq -e 0.2 -O 10 -o BGA1_1.trimmedf.fastq
 
 
 - '^' = anchoring the rpimer at the 5' end of the reads
@@ -93,30 +93,27 @@ Let's have a look at our first attempt::
 
   === Summary ===
 
-  Total reads processed:                  48,997
-  Reads with adapters:                    48,940 (99.9%)
-  Reads written (passing filters):        48,997 (100.0%)
+  Total reads processed:                   8,388
+  Reads with adapters:                     8,383 (99.9%)
+  Reads written (passing filters):         8,388 (100.0%)
 
-  Total basepairs processed:    23,778,470 bp
-  Total written (filtered):     22,652,907 bp (95.3%)
+  Total basepairs processed:     3,808,321 bp
+  Total written (filtered):      3,665,848 bp (96.3%)
 
   === Adapter 1 ===
 
-  Sequence: GAATTGACGGGGGCCCGCACAAG; Type: anchored 5'; Length: 23; Trimmed: 48940 times.
+  Sequence: CTACGGGNGGCWGCAG; Type: anchored 5'; Length: 16; Trimmed: 8383 times.
 
   No. of allowed errors:
-  0-4 bp: 0; 5-9 bp: 1; 10-14 bp: 2; 15-19 bp: 3; 20-23 bp: 4
+  0-4 bp: 0; 5-9 bp: 1; 10-14 bp: 2; 15 bp: 3
 
   Overview of removed sequences
   length	count	expect	max.err	error counts
-  19	11	0.0	3	0 0 0 0 11
-  20	23	0.0	4	0 0 0 22 1
-  21	36	0.0	4	0 0 30 5 1
-  22	478	0.0	4	0 422 52 4
-  23	48137	0.0	4	47081 1031 16 7 2
-  24	42	0.0	4	0 34 7 1
-  25	75	0.0	4	0 0 65 3 7
-  26	138	0.0	4	0 0 0 136 2
+  15	4	0.0	3	0 1 0 3
+  16	65	0.0	3	22 6 37
+  17	8282	0.0	3	0 8114 168
+  18	29	0.0	3	0 0 27 2
+  19	3	0.0	3	0 0 0 3
 
 
 
@@ -124,27 +121,27 @@ Now we trim off the reverse primer::
 
    mkdir ~/workdir/cutadapt
    cd ~/workdir/cutadapt
-   cutadapt -a CGGTGTGTACAAGGCCCGGGAACG$ 057.trimmedf.fastq -e 0.2 -O 10 -o 057.trimmedfr.fastq
+   cutadapt -a GACTACHVGGGTATCTAATCC$ BGA1_1.trimmedf.fastq -e 0.2 -O 10 -o BGA1_1.trimmedfr.fastq
 
 Now, apparently that didn't worked out. The problem is, that the primer is given 5'-3' and by merging our reads the reverse reads now is the reverse complement of the original read, so the primer als needs to be reverse complemented.
 
 Let us quickly do that by creating a new fasta file and call `rev`::
 
   cd ~/workdir
-  echo -e ">primer\nCGGTGTGTACAAGGCCCGGGAACG" > revprimer.fas
+  echo -e ">primer\nGACTACHVGGGTATCTAATCC" > revprimer.fas
   revseq -sequence revprimer.fas -outseq revprimer_rc.fas
   cat revprimer_rc.fas
   
 We can use the correct primer now to trim our reads at the 3' end::
 
    cd ~/workdir/cutadapt
-   cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ 057.trimmedf.fastq -e 0.2 -O 10 -o 057.trimmedfr.fastq
+   cutadapt -a GGATTAGATACCCBDGTAGTC$ BGA1_1.trimmedf.fastq -e 0.2 -O 10 -o BGA1_1.trimmedfr.fastq
 
 Finally, we do that for all of our datasets::
 
   cd ~/workdir/cutadapt
-  parallel "cutadapt -g ^GAATTGACGGGGGCCCGCACAAG ../flash/{}.extendedFrags.fastq -e 0.2 -O 10 -o {}.trimmedf.fastq" ::: {058,068,074}
-  parallel "cutadapt -a CGTTCCCGGGCCTTGTACACACCG$ {}.trimmedf.fastq -e 0.2 -O 10 -o {}.trimmedfr.fastq" ::: {058,068,074}
+  parallel "cutadapt -g ^CTACGGGNGGCWGCAG ../flash/{}.extendedFrags.fastq -e 0.2 -O 10 -o {}.trimmedf.fastq" ::: {BGA1_2,BGA2_1,BGA2_2,BGA3_1,BGA3_2,BGA4_1,BGA4_2}
+  parallel "cutadapt -a GGATTAGATACCCBDGTAGTC$ {}.trimmedf.fastq -e 0.2 -O 10 -o {}.trimmedfr.fastq" ::: {BGA1_2,BGA2_1,BGA2_2,BGA3_1,BGA3_2,BGA4_1,BGA4_2}
   
 
 Quality Trimming 
@@ -156,7 +153,7 @@ For that we use sickle, which trims based on average q-score within a sliding wi
 
   mkdir -p ~/workdir/sickle
   cd ~/workdir/sickle
-  sickle se -f ../cutadapt/057.trimmedfr.fastq -t sanger -q20 -o 057.clipped.fastq
+  sickle se -f ../cutadapt/BGA1_1.trimmedfr.fastq -t sanger -q20 -o BGA1_1.clipped.fastq
 
 -  '-q 20' = min average quality score of 20
 -  '-t sanger' = Phred+33 q-score scale
@@ -165,7 +162,7 @@ For that we use sickle, which trims based on average q-score within a sliding wi
 Again, we do that for all our data sets::
 
   cd ~/workdir/sickle
-  parallel "sickle se -f ../cutadapt/{}.trimmedfr.fastq -t sanger -q20 -o {}.clipped.fastq" ::: {058,068,074}
+  parallel "sickle se -f ../cutadapt/{}.trimmedfr.fastq -t sanger -q20 -o {}.clipped.fastq" ::: {BGA1_2,BGA2_1,BGA2_2,BGA3_1,BGA3_2,BGA4_1,BGA4_2}
 
 Lenght Filtering
 ----------------
@@ -175,30 +172,44 @@ Finally, we will filter out all reads which are to short (generally) or which ou
 Pls download that script first::
 
   cd $CONDA_PREFIX/bin
-  wget https://github.com/jueneman/16S-workshop-denbi/edit/master/docs/qc/FastaStats.pl
+  wget https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/mgcourse_data/FastaStats.pl
   chmod u+x FastaStats.pl
 
 Now we call it on our FastQ file::
 
-  FastaStats.pl -q BGA1\_1.trimmed.clipped.fastq &gt;
-BGA1\_1.trimmed.clipped.fastq.hist
+  mkdir ~/workdir/length
+  cd  ~/workdir/length  
+  FastaStats.pl -q ../sickle/BGA1_1.clipped.fastq > BGA1_1.fastq.hist
+  head -n 10 057.fastq.hist
 
+We trim now our reads based on a 1.5*IQR window::
 
-head -n 10 BGA1\_1.trimmed.clipped.fastq.hist
+  fastq-mcf -0 -l 369 -L 461 n/a ../sickle/BGA1_1.clipped.fastq -o BGA1_1.fastq
+  
+- low = 369
+- high = 461
+- n/a = we don't wanna use primer clipping, therefore don't provide such a file
 
-fastq-mcf -0 -l 367 -L 463 n/a BGA1\_1.trimmed.clipped.fastq -o
-BGA1\_1.fastq
+And again we run this on all of our data:
+
+  parallel "FastaStats.pl -q ../sickle/{}.clipped.fastq > {}.fastq.hist" ::: {BGA1_2,BGA2_1,BGA2_2,BGA3_1,BGA3_2,BGA4_1,BGA4_2}
+  grep IQR *.hist
+  fastq-mcf -0 -l 369 -L 461 n/a ../sickle/BGA1_2.clipped.fastq -o BGA1_2.fastq
+  parallel "fastq-mcf -0 -l 372 -L 460 n/a ../sickle/{}.clipped.fastq -o {}.fastq" ::: {BGA2_1,BGA2_2}
+  parallel "fastq-mcf -0 -l 364 -L 464 n/a ../sickle/{}.clipped.fastq -o {}.fastq" ::: {BGA3_1,BGA3_2}
+  parallel "fastq-mcf -0 -l 377 -L 449 n/a ../sickle/{}.clipped.fastq -o {}.fastq" ::: {BGA4_1,BGA4_2}
 
 
 FastQC - Revisited 
 ------------------
 
--   … run batch mode on quality treated data
--   … compare the raw with the hq data
+We can now inspect how this basic quality treatment affected the raw read qiality by comparing the results to our previous FastQC reports::
 
-
-Quality Treatment – Final Remarks 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
+  cd ~/workdir/fastq
+  fastqc -t 14 -o ~/workdir/fastqc/ ~/workdir/length/*.fastq
+  
+Final Remarks 
+^^^^^^^^^^^^^
 
 Know your data
 
@@ -220,77 +231,16 @@ Presented workflow only one approach
 
 But always examine raw sequencing data!
 
-Part I: Data Pre-Processing
-
-List of Software Used 
-^^^^^^^^^^^^^^^^^^^^^^^^=
-
-FastQC
-
--   *→ http://www.bioinformatics.babraham.ac.uk/projects/fastqc/*
-
-sickle
-
--   *→ https://github.com/najoshi/sickle*
-
-cutadapt
-
--   *→ https://code.google.com/p/cutadapt/*
-
-FLASh
-
--   *→ http://ccb.jhu.edu/software/FLASH/*
-
-ea-utils
-
--   *→ https://code.google.com/p/ea-utils/*
-
-FASTX-Toolkit
-
--   *→ http://hannonlab.cshl.edu/fastx\_toolkit/*
-
-Quality Treatment – Primer Clipping 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-cd \~/workdir/raw\_data
 
 
+References:
+^^^^^^^^^^^
 
-cat Primers.txt
-
-
-
-cutadapt -g \^CTACGGGNGGCWGCAG BGA1\_1.extendedFrags.fastq -o
-BGA1\_1.f\_tr.fastq -e 0.2 -O 10 --untrimmed-output
-BGA1\_1.f\_utr.fastq
-
-
-
-cutadapt -g \^GACTACHVGGGTATCTAATCC BGA1\_1.f\_utr.fastq -o
-BGA1\_1.fr\_tr.fastq -e 0.2 -O 10 --trimmed-only
-
-
-
-cutadapt -a GGATTAGATACCCBDGTAGTC\$ BGA1\_1.f\_tr.fastq -e 0.2 -O 10
--o BGA1\_1.trimmed.forward.fastq --trimmed-only
-
-
-
-cutadapt -a CTGCWGCCNCCCGTAG\$ BGA1\_1.fr\_tr.fastq -o
-BGA1\_1.trimmed.reverse.fastq -e 0.2 -O 10 --trimmed-only
-
-
-
-fastx\_reverse\_complement -i BGA1\_1.trimmed.reverse.fastq -o
-BGA1\_1.trimmed.flipped.fastq -Q33
-
-
-
-cat BGA1\_1.trimmed.forward.fastq BGA1\_1.trimmed.flipped.fastq &gt;
-BGA1\_1.trimmed.fastq
-
+FastQC:  *→ http://www.bioinformatics.babraham.ac.uk/projects/fastqc/*
+Sickle:  *→ https://github.com/najoshi/sickle*
+cutadapt: *→ https://code.google.com/p/cutadapt/*
+FLASh: *→ http://ccb.jhu.edu/software/FLASH/*
+ea-utils: *→ https://code.google.com/p/ea-utils/*
 
 
 
