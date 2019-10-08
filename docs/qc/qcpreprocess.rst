@@ -70,6 +70,7 @@ First we need to know which primer sequences weree used to asmplify our region o
 | Domain        | Region | Sequence                 |
 +===============+========+==========================+
 | Bacteria      | V3F    | CTACGGGNGGCWGCAG         |
++---------------+--------+--------------------------+
 | Bacteria      | V4R    | GACTACHVGGGTATCTAATCC    |
 +---------------+--------+--------------------------+
 
