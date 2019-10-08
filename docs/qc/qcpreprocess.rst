@@ -6,9 +6,10 @@ FASTQ Format
 
 Let's first have a look on what a FASTQ file looks like and who its format is defined:
 
-<p align="center">
-  <img width="460" height="300" src="https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png">
-</p>
+.. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png
+
+  
+
 
 ![](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
 
