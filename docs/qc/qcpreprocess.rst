@@ -2,86 +2,29 @@ Quality Treatment
 -----------------
 
 - Reads contain errors (0.1-15%) and contamination
-
 - Quality matters!?
-  * NGS high throughput = lots of data
-  * The more data the more errors (systematic errors)
-  * 16S data &gt; WGS read-based &gt; WGS assembly-based
-  * Better data = lower computational cost
-  * Decrease of false positives
-  * But: always trade-off (false negatives)
+   - NGS high throughput = lots of data
+   - The more data the more errors (systematic errors)
+   - 16S data &gt; WGS read-based &gt; WGS assembly-based
+   - Better data = lower computational cost
+   - Decrease of false positives
+   - But: always trade-off (false negatives)   
+- Quality based filtering vs error correction
+- Many many tools available
 
-Quality based filtering vs error correction
-
-Many many tools available
-
-Part I: Data Pre-Processing
-
-Quality Treatment 
-^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
 
 Typical workflow:
+^^^^^^^^^^^^^^^^^
 
-de-multiplex
+.. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/workflow.png
 
-merge reads
-
-clip adapters
-
-trim by quality
-
-filter by length
-
-clip primers
-
-raw data
-
-high quality data
-
-16S based
-
-WGS read-based
-
-WGS assembly-based
-
-Quality Treatment 
-^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
-
-Typical workflow:
-
-de-multiplex
-
-merge reads
-
-clip adapters
-
-trim by quality
-
-filter by length
-
-clip primers
-
-raw data
-
-high quality data
-
-16S based
-
-WGS read-based
-
-WGS assembly-based
-
+For this exercise:
 -   Only 16S data
 -   Merge: FLASh
 -   Clip primers: cutadapt
 -   Trim quality: sickle
 -   Filter length: ea-utils
 
-For this exercise:
 
 Quality Treatment – Merge Reads 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
