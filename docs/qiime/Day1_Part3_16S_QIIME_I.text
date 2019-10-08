@@ -367,55 +367,7 @@ usearch, uclust, MOTHUR, blast
 
 Usearch, uclust, CD-HIT, MOTHUR
 
-**Open reference**
 
-****
-
-Combination of reference based and De novo approach
-
-Build OTU table
-
-i.e., per sample OTU counts
-
-Build phylogenetic tree
-
-e.g., FastTree, RAxML, ClearCut
-
-Align sequences
-
-e.g., PyNAST, infernal, MUSCLE, MAFFT
-
-Assign taxonomy
-
-Blast, RDP Classifier, uclust consensus-based
-
-α-diversity and rarefraction
-
-e.g., Simpson, chao1, observed species, Shannon
-
-β-diversity and rarefraction
-
-e.g., weighted und unweighted UniFrac, Bray-Curtis, Jaccard
-
-Visualization
-
-e.g., 2D and 3D PCoA plots, distance histograms, taxonomy pie charts/bar
-charts/are charts, rarefaction plots, OTU network visualization,
-jackknified hierarchical clustering
-
-Navas-Molina et al. 2013, Meth. Enzymol.
-
-Pre-Processing {#pre-processing style="page-break-before:always; "}
-==============
-
-In order to use (our) data in QIIME, some pre-processing needs to be
-done: 1. Barcode extraction (in some case)
-
-2\. Quality control
-
-3\. Relabeling of sequencing reads
-
-4\. Merging of reads into a single FASTA file
 
 Import your quality treated data {#import-your-quality-treated-data style="page-break-before:always; "}
 ================================
