@@ -29,7 +29,8 @@ For this exercise:
 Quality Treatment – Merge Reads 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Assembly of forward and reverse read pairs:
+- Assembly of forward and reverse read pairs
+   
    - If original DNA fragment short than 2x read length
 - Ungapped alignment with *min overlap* region (favors Illumina)
 - Quality scores at merged positions recalculated (abs difference)
