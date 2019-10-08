@@ -4,10 +4,7 @@
 **FASTQ Format** {#fastq-format-1 style="page-break-before:always; "}
 ================
 
-![alt text][fastq]
-
-
-[fastq]: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png
+![fastq](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
 
 **Sequence Quality Scores** {#sequence-quality-scores style="page-break-before:always; "}
 ===========================
