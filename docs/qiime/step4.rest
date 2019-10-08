@@ -45,15 +45,25 @@ First, we import these data into QIIME 2 Artifacts. Since the reference taxonomy
 
   qiime tools import \
     --type 'FeatureData[Sequence]' \
-    --input-path ~/wordir/16Sdatabase/silva_132_99_16S.fna \
+    --input-path ~/workdir/16Sdatabase/silva_132_99_16S.fna \
     --output-path silva_132_99_16S.qza
 
   qiime tools import \
     --type 'FeatureData[Taxonomy]' \
     --input-format HeaderlessTSVTaxonomyFormat \
-    --input-path ~/wordir/16Sdatabase/consensus_taxonomy_all_levels.txt \
+    --input-path ~/workdir/16Sdatabase/consensus_taxonomy_all_levels.txt \
     --output-path silva_taxonomy.qza
 
+
+Now, we extract only the target region from that reference::
+
+qiime feature-classifier extract-reads \
+  --i-sequences silva_132_99_16S.qza \
+  --p-f-primer CTACGGGNGGCWGCAG \
+  --p-r-primer GACTACHVGGGTATCTAATCC \  
+  --p-min-length 100 \
+  --p-max-length 600 \
+  --o-reads silva_132_99_16S_V3V4.qza
 
 
 
