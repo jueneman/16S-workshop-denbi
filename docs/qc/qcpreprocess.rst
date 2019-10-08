@@ -66,7 +66,7 @@ Primer Clipping
 
 First we need to know which primer sequences weree used to asmplify our region of interest
 
-+---------------+--------+--------------------------|
++---------------+--------+--------------------------+
 | Domain        | Primer | Sequence                 |
 +===============+========+==========================+
 | Bacteria  RRS | F939   | GAATTGACGGGGGCCCGCACAAG  |
