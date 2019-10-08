@@ -14,8 +14,4 @@ typical steps of metagenome assembly and binning.
    
    data
    qc/index
-   assembly/index
-   geneprediction/index
-   evaluation/index
-   binning/index
-   classification/index
+   qiime/index
