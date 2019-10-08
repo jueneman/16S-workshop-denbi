@@ -1,22 +1,24 @@
 Quality Control & Pre-processing
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 FASTQ Format 
 ^^^^^^^^^^^^^^^^
 
-![fastq](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
+Let's first have a look on what a FASTQ file looks like and who its format is defined:
+
+.. image:: https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png
+
+  
+
+
+![](https://github.com/jueneman/16S-workshop-denbi/blob/master/docs/qc/pics/fastq.png)
 
 Sequence Quality Scores 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Part I: Data Pre-Processing
+Sequence quality scores originated form the phred base caller used for Sanger sequencing:
 
--   Quality = log-transformed error probability
 
-Sequence Quality Scores 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Part I: Data Pre-Processing
 
 -   Quality = log-transformed error probability
 
