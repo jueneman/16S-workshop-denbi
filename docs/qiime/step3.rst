@@ -29,7 +29,7 @@ Now we import these reference data into our qiime project::
   cd ~/workdir/qiime
   qiime tools import --type FeatureData[Taxonomy] \
   --input-format HeaderlessTSVTaxonomyFormat \
-  --input-path ~/workdir/16Sdatabase/consensus_taxonomy_all_levels.txt \
+  --input-path ~/workdir/16Sdatabase/consensus_taxonomy_7_levels.txt \
   --output-path consensus_taxonomy_all_levels.qza
 
 Now that everything is prepared, we can initiate the clustering process as implemented in vsearch::
