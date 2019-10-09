@@ -21,7 +21,7 @@ The tutorial dataset is located in our object store. We have also prepared some 
   
 Then, unpack the tar archive::
 
-  tar -xzvf 16Sdata.tgz
+  tar -xzvf 16S-data.tgz
   ln -s 16S-data/raw/ 16Sdata
   
 and remove the tar archives::
