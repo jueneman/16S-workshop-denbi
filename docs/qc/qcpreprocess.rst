@@ -168,12 +168,12 @@ Again, we do that for all our data sets::
 Lenght Filtering
 ----------------
 
-Finally, we will filter out all reads which are to short (generally) or which out of the fragment length (16S hypervariable region). In order to determine the low and high boundry of this filtering step, we will use a small Perl script which generates a read length histrogram and calculates some basic statistics.
+Finally, we will filter out all reads which are to short (generally) or which out of the fragment length (16S hypervariable region). In order to determine the low and high boundry of this filtering step, we will use a small custom Perl script which generates a read length histrogram and calculates some basic statistics.
 
 Pls download that script first::
 
-  cd $CONDA_PREFIX/bin
-  wget https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/mgcourse_data/FastaStats.pl
+  cd $CONDA_PREFIX/bin  
+  wget https://raw.githubusercontent.com/jueneman/16S-workshop-denbi/master/docs/qc/FastaStats.pl
   chmod u+x FastaStats.pl
 
 Now we call it on our FastQ file::
