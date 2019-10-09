@@ -26,7 +26,7 @@ Then, unpack the tar archive::
   
 and remove the tar archives::
 
-  rm 16Sdata.tgz
+  rm 16S-data.tgz
   
 Have a short look, on what is contained within the data directory. It should look like this::
 
