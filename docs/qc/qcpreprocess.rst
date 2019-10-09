@@ -181,7 +181,7 @@ Now we call it on our FastQ file::
   mkdir ~/workdir/length
   cd  ~/workdir/length  
   FastaStats.pl -q ../sickle/BGA1_1.clipped.fastq > BGA1_1.fastq.hist
-  head -n 10 057.fastq.hist
+  head -n 10 BGA1_1.fastq.hist
 
 We trim now our reads based on a 1.5*IQR window::
 
