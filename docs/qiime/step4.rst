@@ -78,6 +78,12 @@ And then train the classifier on that data::
     --o-classifier silva_132_99_16S_V3V4_classifier.qza \
     --verbose 
 
+Both, the region extraction and the classifier training will take some time. If you can't wait or somehow this process takes too long, you can download / copy both files form the obejct storage. Since we have already downloaded and unpacked the database, we only need to copy the files:: 
+
+  cd ~/workdir/qiime
+  cp ~/workdir/16Sdatabase/silva_132_99_16S_V3V4.qza .
+  cp ~/workdir/16Sdatabase/silva_132_99_16S_V3V4_classifier.qza .
+
 Now that our classifier is ready to use, we taxonomically classify both our OTUs and the ASVs::
 
   cd ~/workdir/qiime
