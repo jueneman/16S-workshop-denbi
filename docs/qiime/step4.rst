@@ -43,11 +43,13 @@ We’ll train a Naive Bayes classifier on the Silva v132 99% OTUs, where we trim
 
 First, we import these data into QIIME 2 Artifacts. Since the reference taxonomy file is a tab-separated (TSV) file without a header, we must specify HeaderlessTSVTaxonomyFormat as the source format since the default source format requires a header::
 
+  cd ~/workdir/qiime
   qiime tools import \
     --type 'FeatureData[Sequence]' \
     --input-path ~/workdir/16Sdatabase/silva_132_99_16S.fna \
     --output-path silva_132_99_16S.qza
 
+  cd ~/workdir/qiime
   qiime tools import \
     --type 'FeatureData[Taxonomy]' \
     --input-format HeaderlessTSVTaxonomyFormat \
@@ -57,6 +59,7 @@ First, we import these data into QIIME 2 Artifacts. Since the reference taxonomy
 
 Now, we extract only the target region from that reference::
 
+  cd ~/workdir/qiime
   qiime feature-classifier extract-reads \
     --i-sequences silva_132_99_16S.qza \
     --p-f-primer CTACGGGNGGCWGCAG \
@@ -68,6 +71,7 @@ Now, we extract only the target region from that reference::
 
 And then train the classifier on that data::
 
+  cd ~/workdir/qiime
   qiime feature-classifier fit-classifier-naive-bayes \
     --i-reference-reads silva_132_99_16S_V3V4.qza \
     --i-reference-taxonomy silva_taxonomy.qza \
@@ -76,12 +80,14 @@ And then train the classifier on that data::
 
 Now that our classifier is ready to use, we taxonomically classify both our OTUs and the ASVs::
 
+  cd ~/workdir/qiime
   qiime feature-classifier classify-sklearn \
   --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
   --i-reads bga_oref_seqs.qza \
   --o-classification bga_oref_seqs_taxonomy.qza \
   --verbose
 
+  cd ~/workdir/qiime
   qiime feature-classifier classify-sklearn \
   --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
   --i-reads rep-seqs-dada2.qza \
@@ -90,22 +96,26 @@ Now that our classifier is ready to use, we taxonomically classify both our OTUs
 
 And visualize the results::
 
+  cd ~/workdir/qiime
   qiime metadata tabulate \
     --m-input-file bga_oref_seqs_taxonomy.qza \
     --o-visualization bga_oref_seqs_taxonomy.qzv
-    
+
+  cd ~/workdir/qiime
   qiime metadata tabulate \
     --m-input-file rep-seqs-dada2-taxonomy.qza \
     --o-visualization rep-seqs-dada2-taxonomy.qzv
 
 In addition, we can view the taxonomic composition of our samples with interactive bar plots. Generate those plots with the following command and then open the visualization::
 
+  cd ~/workdir/qiime
   qiime taxa barplot \
     --i-table bga_oref_table.qza \
     --i-taxonomy bga_oref_seqs_taxonomy.qza \
     --m-metadata-file combined_mapping.txt	\
     --o-visualization oref-taxa-bar-plots.qzv
 
+  cd ~/workdir/qiime
   qiime taxa barplot \
     --i-table table-dada2.qza \
     --i-taxonomy rep-seqs-dada2-taxonomy.qza \
