@@ -53,7 +53,7 @@ First, we import these data into QIIME 2 Artifacts. Since the reference taxonomy
   qiime tools import \
     --type 'FeatureData[Taxonomy]' \
     --input-format HeaderlessTSVTaxonomyFormat \
-    --input-path ~/workdir/16Sdatabase/consensus_taxonomy_all_levels.txt \
+    --input-path ~/workdir/16Sdatabase/consensus_taxonomy_7_levels_99.txt \
     --output-path silva_taxonomy.qza
 
 
