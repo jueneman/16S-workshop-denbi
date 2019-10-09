@@ -206,7 +206,7 @@ FastQC - Revisited
 
 We can now inspect how this basic quality treatment affected the raw read qiality by comparing the results to our previous FastQC reports::
 
-  cd ~/workdir/fastq
+  cd ~/workdir/fastqc
   fastqc -t 14 -o ~/workdir/fastqc/ ~/workdir/length/*.fastq
   
   
