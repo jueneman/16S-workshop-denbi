@@ -63,14 +63,16 @@ Now, we extract only the target region from that reference::
     --p-r-primer GACTACHVGGGTATCTAATCC \  
     --p-min-length 100 \
     --p-max-length 600 \
-    --o-reads silva_132_99_16S_V3V4.qza
+    --o-reads silva_132_99_16S_V3V4.qza \
+    --verbose
 
 And then train the classifier on that data::
 
   qiime feature-classifier fit-classifier-naive-bayes \
     --i-reference-reads silva_132_99_16S_V3V4.qza \
     --i-reference-taxonomy silva_taxonomy.qza \
-    --o-classifier silva_132_99_16S_V3V4_classifier.qza
+    --o-classifier silva_132_99_16S_V3V4_classifier.qza \
+    --verbose 
 
 Now that our classifier is ready to use, we taxonomically classify both our OTUs and the ASVs::
 
