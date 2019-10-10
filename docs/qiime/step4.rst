@@ -166,7 +166,8 @@ Then open and edit the manifest.txt::
 
   kate mainfest.txt
   
-And edit this file so that it now contains::
+And edit this file so that it now contains
+
 +-----------+-------------------------------------------------+---------+
 |sample-id  |absolute-filepath                                |direction|
 +===========+=================================================+=========+
