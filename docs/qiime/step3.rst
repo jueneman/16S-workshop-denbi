@@ -16,8 +16,7 @@ All requeired files have been uploaded to the public object storage in the cloud
  cd ~/workdir
  wget https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/mgcourse_data/16S-database.tgz
  tar -xvzf 16S-database.tgz
- rm tar -xvzf 16S-database.tgz
- cp ~/DATA/database/silva_128/97/97_otus_16S.fasta .
+ rm 16S-database.tgz 
 
 Now we import these reference data into our qiime project::
 
