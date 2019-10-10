@@ -84,13 +84,19 @@ Both, the region extraction and the classifier training will take some time. If 
   cp ~/workdir/16Sdatabase/silva_132_99_16S_V3V4.qza .
   cp ~/workdir/16Sdatabase/silva_132_99_16S_V3V4_classifier.qza .
 
-Now that our classifier is ready to use, we taxonomically classify both our OTUs and the ASVs::
+Now that our classifier is ready to use, we taxonomically classify both our OTUs and the ASVs. Unfortunantely, the main hard disk of our virtual machines don't have enough free disk space to hold all temp files for this process, so we need to direct temp files to a different location first::
+
+  mkdir -p /mnt/volume/tmp
+  export TMPDIR=/mnt/volume/tmp
+  
+Then we can start the classification::
 
   cd ~/workdir/qiime
   qiime feature-classifier classify-sklearn \
   --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
   --i-reads bga_oref_seqs.qza \
   --o-classification bga_oref_seqs_taxonomy.qza \
+  --p-n-jobs 14 \
   --verbose
 
   cd ~/workdir/qiime
@@ -98,6 +104,7 @@ Now that our classifier is ready to use, we taxonomically classify both our OTUs
   --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
   --i-reads rep-seqs-dada2.qza \
   --o-classification rep-seqs-dada2-taxonomy.qza \
+  --p-n-jobs 14 \
   --verbose
 
 And visualize the results::
