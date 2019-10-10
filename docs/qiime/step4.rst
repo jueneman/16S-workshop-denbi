@@ -100,8 +100,8 @@ Then we can start the classification::
   cd ~/workdir/qiime
   qiime feature-classifier classify-sklearn \
   --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
-  --i-reads bga_oref_seqs.qza \
-  --o-classification bga_oref_seqs_taxonomy.qza \
+  --i-reads rep-seqs-dada2.qza \
+  --o-classification rep-seqs-dada2-taxonomy.qza \
   --p-n-jobs 14 \
   --verbose
   
@@ -114,16 +114,7 @@ For the OpenRef OTUs we will use another classification approach, one based on a
   --p-perc-identity 0.97 \
   --o-classification bga_oref_seqs_taxonomy.qza \
   --p-threads 14 
-  
-  
-
-  cd ~/workdir/qiime
-  qiime feature-classifier classify-sklearn \
-  --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
-  --i-reads rep-seqs-dada2.qza \
-  --o-classification rep-seqs-dada2-taxonomy.qza \
-  --p-n-jobs 14 \
-  --verbose
+ 
 
 And visualize the results::
 
@@ -208,25 +199,42 @@ We can now use this new manifest to import all PE reads into qiime as PairedEndS
 
   cd ~/workdir/qiime
   qiime tools import \
-  --type 'SampleData[PairedEndSequencesWithQuality]' \
-  --input-format PairedEndFastqManifestPhred33 \
-  --input-path ../16S-data/raw/manifest.txt \
-  --output-path bga_PE_demux
+    --type 'SampleData[PairedEndSequencesWithQuality]' \
+    --input-format PairedEndFastqManifestPhred33 \
+    --input-path ../16S-data/raw/manifest.txt \
+    --output-path bga_PE_demux
 
 Then, we can initiate the dada2 pipeline on this PE container using the denoised-paired function. This time, we need to provide more parameters, i.e. once for the forward and reverse reads. Also we adjust the trimming parameter to trim off all base positions in the forward and reverse reads which belongs to the amplification primer::
 
   qiime dada2 denoise-paired \
-  --i-demultiplexed-seqs bga_PE_demux.qza \
-  --p-trim-left-f 20 \
-  --p-trim-left-r 30 \
-  --p-trunc-len-f 280 \
-  --p-trunc-len-r 260 \
-  --o-table dada2_PE_table \
-  --o-representative-sequences dada2_PE_reps \
-  --o-denoising-stats dada2_PE_stats
+    --i-demultiplexed-seqs bga_PE_demux.qza \
+    --p-trim-left-f 20 \
+    --p-trim-left-r 30 \
+    --p-trunc-len-f 280 \
+    --p-trunc-len-r 260 \
+    --o-table dada2_PE_table \
+    --o-representative-sequences dada2_PE_reps \
+    --o-denoising-stats dada2_PE_stats
 
 As you can see, dada2 now filtered, merged, chimera checked and de-noised the datasets into ASVs::
 
   qiime metadata tabulate \
   --m-input-file dada2_PE_stats.qza \
   --o-visualization dada2_PE_stats.qzv
+  
+Again, we can classify them using the naive bayse classifier::
+
+  cd ~/workdir/qiime
+  qiime feature-classifier classify-sklearn \
+    --i-classifier silva_132_99_16S_V3V4_classifier.qza  \
+    --i-reads dada2_PE_reps.qza \
+    --o-classification dada2_PE_reps-taxonomy.qza \
+    --p-n-jobs 14 \
+    --verbose
+
+  qiime taxa barplot \
+    --i-table dada2_PE_table.qza \
+    --i-taxonomy dada2_PE_reps-taxonomy.qza \
+    --m-metadata-file combined_mapping.txt	\
+    --o-visualization dada2-PE-taxa-bar-plots.qzv
+
