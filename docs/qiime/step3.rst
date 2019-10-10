@@ -50,3 +50,4 @@ This will take some time (even hours for very large data sets)! Then we can look
   qiime feature-table summarize \
   --i-table bga_oref_table.qza \
   --o-visualization bga_oref_table.qz
+  
