@@ -45,4 +45,8 @@ Now that everything is prepared, we can initiate the clustering process as imple
   --i-reference-sequences silva_132_97_16S.qza \
   --verbose
 
-This will take some time (even hours for very large data sets)!
+This will take some time (even hours for very large data sets)! Then we can look at the results::
+
+  qiime feature-table summarize \
+  --i-table bga_oref_table.qza \
+  --o-visualization bga_oref_table.qz
