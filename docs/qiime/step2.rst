@@ -55,9 +55,9 @@ Vsearch function for chimera filtering is also integrated into qiime and can be 
    --i-sequences bga_joined_demux_derep.qza \
    --i-table bga_joined_demux_derep_table.qza \   
    --verbose
-   --o-chimeras chimeras.gza
-   --o-nonchimeras nonchimeras.gza
-   --o-stats stats.gza
+   --o-chimeras chimeras
+   --o-nonchimeras nonchimeras
+   --o-stats stats
 
 This will create three files::
 
